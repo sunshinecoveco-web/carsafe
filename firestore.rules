@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can only read and write their own profile.
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // Vehicle data security:
+    // 1. Owners have full access.
+    // 2. Approved Dealers/Resellers have read access.
+    // 3. Insurance partners have read access ONLY if the vehicle is in an active claim.
+    match /vehicles/{vehicleId} {
+      allow read: if request.auth.uid == resource.data.ownerId ||
+                     request.auth.uid in resource.data.get('approvedDealerIds', []) ||
+                     request.auth.uid in resource.data.get('approvedResellerIds', []) ||
+                     (request.auth.uid in resource.data.get('approvedInsuranceIds', []) && resource.data.status == 'in_claim');
+      
+      // Only the owner can update vehicle details/status.
+      allow update: if request.auth.uid == resource.data.ownerId;
+      allow create, delete: if false;
+    }
+
+    // Chat session metadata: Participants only.
+    match /chats/{chatId} {
+      allow read, write: if request.auth.uid in resource.data.participants;
+    }
+
+    // Chat messages: Participants only, immutable.
+    match /chats/{chatId}/messages/{messageId} {
+      allow read: if get(/databases/$(database)/documents/chats/$(chatId)).data.participants.hasAny([request.auth.uid]);
+      allow create: if request.auth.uid == request.resource.data.senderId &&
+                       get(/databases/$(database)/documents/chats/$(chatId)).data.participants.hasAny([request.auth.uid]);
+      allow update, delete: if false;
+    }
+  }
+}
