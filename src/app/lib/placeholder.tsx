@@ -1,0 +1,135 @@
+
+{
+  "vehicles": [
+    {
+      "id": "hilux1",
+      "url": "https://picsum.photos/seed/hilux1/600/400",
+      "hint": "white bakkie"
+    },
+    {
+      "id": "polo1",
+      "url": "https://picsum.photos/seed/polo1/600/400",
+      "hint": "silver hatchback"
+    },
+    {
+      "id": "ranger1",
+      "url": "https://picsum.photos/seed/ranger1/600/400",
+      "hint": "blue bakkie"
+    },
+    {
+      "id": "bmw1",
+      "url": "https://picsum.photos/seed/bmw1/600/400",
+      "hint": "black sedan"
+    },
+    {
+      "id": "merc1",
+      "url": "https://picsum.photos/seed/merc1/600/400",
+      "hint": "white luxury sedan"
+    },
+    {
+      "id": "isuzu1",
+      "url": "https://picsum.photos/seed/isuzu1/600/400",
+      "hint": "grey pickup"
+    },
+    {
+      "id": "hyundai1",
+      "url": "https://picsum.photos/seed/hyundai1/600/400",
+      "hint": "red compact suv"
+    },
+    {
+      "id": "kia1",
+      "url": "https://picsum.photos/seed/kia1/600/400",
+      "hint": "blue hatchback"
+    },
+    {
+      "id": "fortuner1",
+      "url": "https://picsum.photos/seed/fortuner1/600/400",
+      "hint": "black suv"
+    },
+    {
+      "id": "haval1",
+      "url": "https://picsum.photos/seed/haval1/600/400",
+      "hint": "blue crossover"
+    },
+    {
+      "id": "chery1",
+      "url": "https://picsum.photos/seed/chery1/600/400",
+      "hint": "white crossover"
+    },
+    {
+      "id": "navara1",
+      "url": "https://picsum.photos/seed/navara1/600/400",
+      "hint": "grey bakkie"
+    },
+    {
+      "id": "swift1",
+      "url": "https://picsum.photos/seed/swift1/600/400",
+      "hint": "red hatchback"
+    },
+    {
+      "id": "mazda1",
+      "url": "https://picsum.photos/seed/mazda1/600/400",
+      "hint": "grey suv"
+    },
+    {
+      "id": "golf81",
+      "url": "https://picsum.photos/seed/golf81/600/400",
+      "hint": "red hot hatch"
+    },
+    {
+      "id": "everest1",
+      "url": "https://picsum.photos/seed/everest1/600/400",
+      "hint": "silver luxury suv"
+    },
+    {
+      "id": "starlet1",
+      "url": "https://picsum.photos/seed/starlet1/600/400",
+      "hint": "blue hatchback"
+    },
+    {
+      "id": "bmwx31",
+      "url": "https://picsum.photos/seed/bmwx31/600/400",
+      "hint": "white suv"
+    },
+    {
+      "id": "audia31",
+      "url": "https://picsum.photos/seed/audia31/600/400",
+      "hint": "grey hatchback"
+    },
+    {
+      "id": "seltos1",
+      "url": "https://picsum.photos/seed/seltos1/600/400",
+      "hint": "orange suv"
+    },
+    {
+      "id": "kiger1",
+      "url": "https://picsum.photos/seed/kiger1/600/400",
+      "hint": "red crossover"
+    },
+    {
+      "id": "mahindra1",
+      "url": "https://picsum.photos/seed/mahindra1/600/400",
+      "hint": "white suv"
+    },
+    {
+      "id": "m41",
+      "url": "https://picsum.photos/seed/m41/600/400",
+      "hint": "blue sports car"
+    },
+    {
+      "id": "pseries1",
+      "url": "https://picsum.photos/seed/pseries1/600/400",
+      "hint": "white bakkie"
+    },
+    {
+      "id": "triton1",
+      "url": "https://picsum.photos/seed/triton1/600/400",
+      "hint": "red bakkie"
+    },
+    {
+      "id": "landing_dashboard",
+      "url": "https://picsum.photos/seed/dashboard/1200/675",
+      "hint": "car dashboard modern"
+    }
+  ]
+}
