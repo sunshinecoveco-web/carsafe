@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Bot, TriangleAlert, Microscope, CheckCircle2 } from "lucide-react";
-import { detectRecurringProblems, type DetectRecurringProblemsOutput } from "@/ai/flows/recurring-problems-flow";
+import { recurringPrograms, type RecurringProgramsOutput } from "@/ai/flows/recurring-programs";
 import { Skeleton } from "../ui/skeleton";
 
 export function RecurringProblemsDetectorCard({ vehicle }: { vehicle: Vehicle }) {
