@@ -6,7 +6,7 @@ import type { Vehicle, FuelProjectionOutput } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Fuel, Zap, TrendingUp, Loader2, Bot, AlertCircle } from "lucide-react";
-import { projectFuelUsage } from "@/ai/flows/fuel-projection-flow";
+import { fuelProjection } from "@/ai/flows/fuel-projection";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 import { format, parseISO } from "date-fns";
