@@ -4,12 +4,12 @@ import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBXpRRJEpORgbRLLnYinT27NL44BLvzWzQ",
+  authDomain: "carsafe-ar46j.firebaseapp.com",
+  projectId: "carsafe-ar46j",
+  storageBucket: "carsafe-ar46j.firebasestorage.app",
+  messagingSenderId: "995851166967",
+  appId: "1:995851166967:web:df3585441131b5675a9ff2"
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
