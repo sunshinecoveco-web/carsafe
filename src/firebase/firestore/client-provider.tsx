@@ -4,7 +4,8 @@
 import { FirebaseProvider } from '@/firebase/provider';
 import { initializeFirebase } from '@/firebase';
 import { useMemo } from 'react';
-import { FirebaseErrorListener } from '@/components/firebase-error-listener';
+
+
 
 export function FirebaseClientProvider({
   children,
@@ -14,9 +15,9 @@ export function FirebaseClientProvider({
   const firebase = useMemo(() => initializeFirebase(), []);
 
   return (
-    <FirebaseProvider {...firebase}>
-      <FirebaseErrorListener />
-      {children}
+
+ <FirebaseProvider {...firebase}>
+    {children}
     </FirebaseProvider>
   );
 }
