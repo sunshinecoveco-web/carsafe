@@ -29,10 +29,10 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const mockUsers: Record<string, { password; role; userId }> = {
-    'owner@carsafe.app': { password: 'password123', role: 'owner', userId: 'owner-1' },
-    'dealer@carsafe.app': { password: 'dealerpass', role: 'dealer', userId: 'dealer-1' },
-    'reseller@carsafe.app': { password: 'resellerpass', role: 'reseller', userId: 'reseller-1' },
-    'insurance@carsafe.app': { password: 'insurancepass', role: 'insurance', userId: 'insurance-1' },
+    'owner@carsafe.test': { password: 'CarSafe2024!', role: 'owner', userId: 'owner-1' },
+    'dealer@carsafe.test': { password: 'CarSafe2024!', role: 'dealer', userId: 'dealer-1' },
+    'reseller@carsafe.test': { password: 'CarSafe2024!', role: 'reseller', userId: 'reseller-1' },
+    'insurance@carsafe.test': { password: 'CarSafe2024!', role: 'insurance', userId: 'insurance-1' },
 }
 
 export function LoginForm() {
@@ -70,10 +70,10 @@ export function LoginForm() {
             <CardHeader>
                 <p className="text-sm text-muted-foreground text-center">
                     Enter a demo email below and its password:<br/>
-                    <span className="font-semibold text-foreground">owner@carsafe.app</span> (password123)<br/>
-                    <span className="font-semibold text-foreground">dealer@carsafe.app</span> (dealerpass)<br/>
-                    <span className="font-semibold text-foreground">reseller@carsafe.app</span> (resellerpass)<br/>
-                    <span className="font-semibold text-foreground">insurance@carsafe.app</span> (insurancepass)
+                    <span className="font-semibold text-foreground">owner@carsafe.test</span> (CarSafe2024!)<br/>
+                    <span className="font-semibold text-foreground">dealer@carsafe.test</span> (CarSafe2024!)<br/>
+                    <span className="font-semibold text-foreground">reseller@carsafe.test</span> (CarSafe2024!)<br/>
+                    <span className="font-semibold text-foreground">insurance@carsafe.test</span> (CarSafe2024!)
                 </p>
             </CardHeader>
           <CardContent className="space-y-6">
