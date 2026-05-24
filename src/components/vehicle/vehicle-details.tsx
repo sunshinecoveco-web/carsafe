@@ -163,17 +163,13 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg shadow-lg">
-            <Image
-              src={vehicle.imageUrl}
-              alt={`${vehicle.make} ${vehicle.model}`}
-              fill
-              style={{ objectFit: 'cover' }}
-              data-ai-hint={vehicle.imageHint}
-              className="bg-muted"
-              priority
-            />
-          </div>
+            <div className="w-full bg-gradient-to-r from-slate-900 to-slate-700 rounded-lg p-6 flex items-center gap-4">
+              <div>
+                <p className="text-slate-400 text-sm">{vehicle.year}</p>
+                <h2 className="text-white text-2xl font-bold">{vehicle.make} {vehicle.model}</h2>
+                <p className="text-slate-300 text-sm font-mono">{vehicle.vin}</p>
+              </div>
+            </div>
         </div>
         <div className="md:col-span-2">
             <div className="flex justify-between items-start">
