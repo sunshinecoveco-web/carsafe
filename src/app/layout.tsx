@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import { FirebaseAppProvider } from '@/components/providers/firebase-app-provider';
 
 export const metadata: Metadata = {
   title: 'CarSafe',
@@ -13,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <FirebaseAppProvider>
+          {children}
+        </FirebaseAppProvider>
+      </body>
     </html>
- );
+  );
 }
