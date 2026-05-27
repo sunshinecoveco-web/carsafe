@@ -7,8 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Button } from "@/components/ui/button";
 import { Fuel, Zap, TrendingUp, Loader2, Bot, AlertCircle } from "lucide-react";
 import { fuelProjection } from "@/ai/flows/fuel-projection";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { Line, LineChart, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
+import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { format, parseISO } from "date-fns";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -39,7 +38,7 @@ export function FuelUsageCard({ vehicle }: { vehicle: Vehicle }) {
                 .map(r => `${r.date}, ${r.amount}, ${r.cost}, ${r.odometer}`)
                 .join('\n');
 
-            const result = await projectFuelUsage({
+            const result = await fuelProjection({
                 make: vehicle.make,
                 model: vehicle.model,
                 fuelHistory: historyStr || "No history available."
@@ -51,13 +50,6 @@ export function FuelUsageCard({ vehicle }: { vehicle: Vehicle }) {
         } finally {
             setLoading(false);
         }
-    };
-
-    const chartConfig = {
-        cost: {
-            label: "Spend ($)",
-            color: "hsl(var(--primary))",
-        },
     };
 
     return (
@@ -74,26 +66,62 @@ export function FuelUsageCard({ vehicle }: { vehicle: Vehicle }) {
                 </div>
             </CardHeader>
             <CardContent className="flex-grow space-y-6">
-                <div className="h-48 w-full">
+                <div className="h-56 w-full">
                     {chartData.length > 0 ? (
-                        <ChartContainer config={chartConfig}>
-                            <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={chartData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                    <XAxis dataKey="date" hide />
-                                    <YAxis />
-                                    <ChartTooltip content={<ChartTooltipContent />} />
-                                    <Line 
-                                        type="monotone" 
-                                        dataKey="cost" 
-                                        stroke="var(--color-cost)" 
-                                        strokeWidth={2} 
-                                        dot={{ r: 4 }} 
-                                        activeDot={{ r: 6 }} 
-                                    />
-                                </LineChart>
-                            </ResponsiveContainer>
-                        </ChartContainer>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={chartData} margin={{ top: 5, right: 16, left: -10, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                                <XAxis
+                                    dataKey="date"
+                                    tick={{ fontSize: 11, fill: "#6b7280" }}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <YAxis
+                                    yAxisId="cost"
+                                    orientation="left"
+                                    tick={{ fontSize: 11, fill: "#6b7280" }}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickFormatter={(v) => `$${v}`}
+                                />
+                                <YAxis
+                                    yAxisId="amount"
+                                    orientation="right"
+                                    tick={{ fontSize: 11, fill: "#6b7280" }}
+                                    tickLine={false}
+                                    axisLine={false}
+                                />
+                                <Tooltip
+                                    contentStyle={{ fontSize: "12px", borderRadius: "8px", border: "1px solid #e5e7eb" }}
+                                    labelStyle={{ fontWeight: 600, color: "#111827" }}
+                                />
+                                <Legend
+                                    wrapperStyle={{ fontSize: "12px", paddingTop: "8px" }}
+                                    formatter={(value) => <span style={{ color: "#374151" }}>{value}</span>}
+                                />
+                                <Line
+                                    yAxisId="cost"
+                                    type="monotone"
+                                    dataKey="cost"
+                                    name="Spend ($)"
+                                    stroke="#3b82f6"
+                                    strokeWidth={2}
+                                    dot={{ r: 4, fill: "#3b82f6", strokeWidth: 0 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                                <Line
+                                    yAxisId="amount"
+                                    type="monotone"
+                                    dataKey="amount"
+                                    name={isEV ? "kWh" : "Gallons"}
+                                    stroke="#22c55e"
+                                    strokeWidth={2}
+                                    dot={{ r: 4, fill: "#22c55e", strokeWidth: 0 }}
+                                    activeDot={{ r: 6 }}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
                     ) : (
                         <div className="h-full flex items-center justify-center border-2 border-dashed rounded-lg text-muted-foreground text-sm">
                             No consumption data available.

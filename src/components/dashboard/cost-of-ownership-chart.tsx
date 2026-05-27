@@ -15,7 +15,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts";
 import { Skeleton } from "../ui/skeleton";
 import { DollarSign, Tag } from "lucide-react";
 
@@ -32,23 +32,23 @@ const chartConfig = {
   },
   "Routine Maintenance": {
     label: "Maintenance",
-    color: "hsl(var(--chart-1))",
+    color: "#3b82f6",
   },
   Repairs: {
     label: "Repairs",
-    color: "hsl(var(--chart-2))",
+    color: "#ef4444",
   },
   Tires: {
     label: "Tires",
-    color: "hsl(var(--chart-3))",
+    color: "#f59e0b",
   },
   Inspection: {
     label: "Inspection",
-    color: "hsl(var(--chart-4))",
+    color: "#22c55e",
   },
   Other: {
     label: "Other",
-    color: "hsl(var(--chart-5))",
+    color: "#8b5cf6",
   },
 } satisfies ChartConfig;
 
@@ -134,7 +134,11 @@ export function CostOfOwnershipChart({ vehicles }: { vehicles: Vehicle[] }) {
                 cursor={false}
                 content={<ChartTooltipContent indicator="dot" />}
               />
-              <Bar dataKey="totalCost" layout="vertical" radius={5} />
+              <Bar dataKey="totalCost" layout="vertical" radius={5}>
+                {chartData.map((entry) => (
+                  <Cell key={entry.category} fill={entry.fill} />
+                ))}
+              </Bar>
             </BarChart>
           </ChartContainer>
         ) : (
