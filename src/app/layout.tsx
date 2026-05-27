@@ -14,10 +14,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script src="https://cdn.tailwindcss.com"></script>
-      </head>
       <body>
         <FirebaseAppProvider>
           {children}
