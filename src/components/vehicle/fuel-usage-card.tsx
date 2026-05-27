@@ -6,7 +6,7 @@ import type { Vehicle, FuelProjectionOutput } from "@/lib/types";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Fuel, Zap, TrendingUp, Loader2, Bot, AlertCircle } from "lucide-react";
-import { fuelProjection } from "@/ai/flows/fuel-projection";
+import { projectFuelUsage } from "@/ai/flows/fuel-projection";
 import { Line, LineChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { format, parseISO } from "date-fns";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -38,7 +38,7 @@ export function FuelUsageCard({ vehicle }: { vehicle: Vehicle }) {
                 .map(r => `${r.date}, ${r.amount}, ${r.cost}, ${r.odometer}`)
                 .join('\n');
 
-            const result = await fuelProjection({
+            const result = await projectFuelUsage({
                 make: vehicle.make,
                 model: vehicle.model,
                 fuelHistory: historyStr || "No history available."

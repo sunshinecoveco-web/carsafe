@@ -15,7 +15,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { Bar, BarChart, Cell, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 import { Skeleton } from "../ui/skeleton";
 import { DollarSign, Tag } from "lucide-react";
 
@@ -112,29 +112,36 @@ export function CostOfOwnershipChart({ vehicles }: { vehicles: Vehicle[] }) {
             <Skeleton className="h-full w-full" />
           </div>
         ) : chartData.length > 0 ? (
-          <ChartContainer config={chartConfig} className="min-h-64 w-full">
+          <ChartContainer config={chartConfig} style={{ height: 240 }} className="w-full">
             <BarChart
               accessibilityLayer
               data={chartData}
-              layout="vertical"
-              margin={{ left: 10, right: 10 }}
+              margin={{ top: 8, right: 12, left: 0, bottom: 4 }}
             >
-              <YAxis
+              <CartesianGrid vertical={false} strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis
                 dataKey="category"
                 type="category"
                 tickLine={false}
-                tickMargin={10}
                 axisLine={false}
+                tick={{ fontSize: 12, fill: "#6b7280" }}
                 tickFormatter={(value) =>
-                  chartConfig[value as keyof typeof chartConfig]?.label
+                  chartConfig[value as keyof typeof chartConfig]?.label ?? value
                 }
               />
-              <XAxis dataKey="totalCost" type="number" hide />
+              <YAxis
+                type="number"
+                tickLine={false}
+                axisLine={false}
+                tick={{ fontSize: 11, fill: "#6b7280" }}
+                tickFormatter={(v) => `R${(v / 1000).toFixed(0)}k`}
+                width={44}
+              />
               <ChartTooltip
-                cursor={false}
+                cursor={{ fill: "rgba(0,0,0,0.04)" }}
                 content={<ChartTooltipContent indicator="dot" />}
               />
-              <Bar dataKey="totalCost" layout="vertical" radius={5}>
+              <Bar dataKey="totalCost" radius={[4, 4, 0, 0]}>
                 {chartData.map((entry) => (
                   <Cell key={entry.category} fill={entry.fill} />
                 ))}
