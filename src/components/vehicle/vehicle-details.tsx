@@ -161,37 +161,24 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
 
   return (
     <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="md:col-span-1">
-            <div className="w-full bg-gradient-to-r from-slate-900 to-slate-700 rounded-lg p-6 flex items-center gap-4">
-              <div>
-                <p className="text-slate-400 text-sm">{vehicle.year}</p>
-                <h2 className="text-white text-2xl font-bold">{vehicle.make} {vehicle.model}</h2>
-                <p className="text-slate-300 text-sm font-mono">{vehicle.vin}</p>
-              </div>
-            </div>
+      <div className="flex justify-between items-start">
+        <div>
+          <Badge variant="outline" className="mb-2">{vehicle.year}</Badge>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">{vehicle.make} {vehicle.model}</h1>
+          <p className="mt-1 text-lg text-muted-foreground font-mono">{vehicle.vin}</p>
+          <div className="mt-4">{getStatusBadge()}</div>
         </div>
-        <div className="md:col-span-2">
-            <div className="flex justify-between items-start">
-                <div>
-                    <Badge variant="outline" className="mb-2">{vehicle.year}</Badge>
-                    <h1 className="text-4xl font-bold tracking-tight text-foreground">{vehicle.make} {vehicle.model}</h1>
-                    <p className="mt-1 text-lg text-muted-foreground font-mono">{vehicle.vin}</p>
-                    <div className="mt-4">{getStatusBadge()}</div>
-                </div>
-                {isOwner && (
-                    <div className="flex items-center gap-2">
-                         <Button variant="outline" onClick={() => toast({ title: "NFC not configured", description: "This is where NFC tap functionality would be implemented for sharing."})}>
-                            <Nfc className="mr-2 h-4 w-4" />
-                            Share via NFC
-                        </Button>
-                        <Button variant="outline" size="icon" onClick={handleShare} aria-label="Share Vehicle">
-                            <Share2 className="h-5 w-5" />
-                        </Button>
-                    </div>
-                )}
-            </div>
-        </div>
+        {isOwner && (
+          <div className="flex items-center gap-2">
+            <Button variant="outline" onClick={() => toast({ title: "NFC not configured", description: "This is where NFC tap functionality would be implemented for sharing."})}>
+              <Nfc className="mr-2 h-4 w-4" />
+              Share via NFC
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleShare} aria-label="Share Vehicle">
+              <Share2 className="h-5 w-5" />
+            </Button>
+          </div>
+        )}
       </div>
 
        {isReadOnly && (

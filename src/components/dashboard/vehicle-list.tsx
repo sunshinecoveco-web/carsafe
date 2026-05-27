@@ -1,7 +1,6 @@
 import type { Vehicle } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
-import Image from "next/image";
 import { Badge } from "../ui/badge";
 import { ArrowRight } from "lucide-react";
 
@@ -11,18 +10,6 @@ export function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
       {vehicles.map((vehicle, index) => (
         <Link key={vehicle.id} href={`/dashboard/vehicles/${vehicle.id}`} className="group block">
           <Card className="h-full overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg hover:border-primary">
-            <div className="relative h-48 w-full">
-               <Image
-                src={vehicle.imageUrl}
-                alt={`${vehicle.make} ${vehicle.model}`}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                style={{ objectFit: 'cover' }}
-                className="transition-transform duration-300 group-hover:scale-105"
-                data-ai-hint={vehicle.imageHint}
-                priority={index < 3}
-              />
-            </div>
             <CardHeader>
               <CardTitle className="flex justify-between items-start">
                 <span>{vehicle.make} {vehicle.model}</span>
