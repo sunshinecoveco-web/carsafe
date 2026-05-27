@@ -66,7 +66,7 @@ export function FuelUsageCard({ vehicle }: { vehicle: Vehicle }) {
                 </div>
             </CardHeader>
             <CardContent className="flex-grow space-y-6">
-                <div className="h-56 w-full">
+                <div style={{ height: '224px', width: '100%' }}>
                     {chartData.length > 0 ? (
                         <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={chartData} margin={{ top: 5, right: 16, left: -10, bottom: 5 }}>
