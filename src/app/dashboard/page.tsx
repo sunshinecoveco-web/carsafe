@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { getVehicles } from "@/lib/data";
 import { VehicleList } from "@/components/dashboard/vehicle-list";
 import { DealerDashboard } from "@/components/dashboard/dealer-dashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { Vehicle } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Tag } from "lucide-react";
@@ -15,14 +16,23 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getVehicles().then((v) => {
-      setVehicles(v);
-      setLoading(false);
-    });
+    getVehicles()
+      .then((v) => setVehicles(v))
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading || !auth.isAuthenticated) {
-    return null;
+    return (
+      <div className="container py-8 space-y-6">
+        <Skeleton className="h-8 w-48" />
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <Skeleton className="h-48 rounded-lg" />
+          <Skeleton className="h-48 rounded-lg" />
+          <Skeleton className="h-48 rounded-lg" />
+        </div>
+      </div>
+    );
   }
 
   if (auth.role === "dealer") {
