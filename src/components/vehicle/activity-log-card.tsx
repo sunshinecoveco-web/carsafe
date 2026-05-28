@@ -16,6 +16,18 @@ import { formatDistanceToNow } from 'date-fns';
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
+const USER_LABELS: Record<string, string> = {
+  '2d340498-6e5e-406d-b47e-a1acc60ed078': 'Owner',
+  '8bc4d8ad-8f49-43d6-acca-3c8586e073a0': 'Dealer',
+  'c0c345d5-4780-4748-9d24-b53e3a46e7f9': 'Reseller',
+  '032bccbd-e329-45e7-8f22-fc27692704c2': 'Insurer',
+  'system': 'System',
+};
+
+function formatUser(userId: string): string {
+  return USER_LABELS[userId] ?? userId;
+}
+
 const iconMap: Record<ActivityLogEntry['action'], React.ReactNode> = {
   'Service Added': <Wrench className="h-4 w-4 text-muted-foreground" />,
   'Service Edited': <Pencil className="h-4 w-4 text-muted-foreground" />,
@@ -61,11 +73,11 @@ export function ActivityLogCard({ activityLog }: { activityLog: ActivityLogEntry
       </CardHeader>
       <CardContent>
         <ScrollArea className="h-[27rem]">
-          <div className="relative pl-6">
+          <div className="relative pl-8">
             {clientActivityLog.map((entry, index) => (
               <div key={entry.id} className="flex gap-4 group">
                  <div className="absolute left-0 flex flex-col items-center h-full">
-                  <span className="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-secondary ring-8 ring-card">
+                  <span className="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-secondary ring-2 ring-card">
                     {iconMap[entry.action]}
                   </span>
                   {index < clientActivityLog.length - 1 && <div className="h-full w-px bg-border my-1"></div>}
@@ -97,7 +109,7 @@ export function ActivityLogCard({ activityLog }: { activityLog: ActivityLogEntry
                         </div>
                     </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {formatDistanceToNow(new Date(entry.timestamp), { addSuffix: true })} by <span className="font-medium text-foreground">{entry.user}</span>
+                    {formatDistanceToNow(new Date(entry.timestamp), { addSuffix: true })} by <span className="font-medium text-foreground">{formatUser(entry.user)}</span>
                   </p>
                 </div>
               </div>
