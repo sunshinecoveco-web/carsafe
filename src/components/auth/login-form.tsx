@@ -28,11 +28,11 @@ const loginSchema = z.object({
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-const mockUsers: Record<string, { password; role; userId }> = {
-    'owner@carsafe.test': { password: 'CarSafe2024!', role: 'owner', userId: 'owner-1' },
-    'dealer@carsafe.test': { password: 'CarSafe2024!', role: 'dealer', userId: 'dealer-1' },
-    'reseller@carsafe.test': { password: 'CarSafe2024!', role: 'reseller', userId: 'reseller-1' },
-    'insurance@carsafe.test': { password: 'CarSafe2024!', role: 'insurance', userId: 'insurance-1' },
+const mockUsers: Record<string, { password: string; role: string; userId: string }> = {
+  'owner@carsafe.test':    { password: 'CarSafe2024!', role: 'owner',     userId: '2d340498-6e5e-406d-b47e-a1acc60ed078' },
+  'dealer@carsafe.test':   { password: 'CarSafe2024!', role: 'dealer',    userId: '8bc4d8ad-8f49-43d6-acca-3c8586e073a0' },
+  'reseller@carsafe.test': { password: 'CarSafe2024!', role: 'reseller',  userId: 'c0c345d5-4780-4748-9d24-b53e3a46e7f9' },
+  'insurer@carsafe.test':  { password: 'CarSafe2024!', role: 'insurance', userId: '032bccbd-e329-45e7-8f22-fc27692704c2' },
 }
 
 export function LoginForm() {
@@ -73,7 +73,7 @@ export function LoginForm() {
                     <span className="font-semibold text-foreground">owner@carsafe.test</span> (CarSafe2024!)<br/>
                     <span className="font-semibold text-foreground">dealer@carsafe.test</span> (CarSafe2024!)<br/>
                     <span className="font-semibold text-foreground">reseller@carsafe.test</span> (CarSafe2024!)<br/>
-                    <span className="font-semibold text-foreground">insurance@carsafe.test</span> (CarSafe2024!)
+                    <span className="font-semibold text-foreground">insurer@carsafe.test</span> (CarSafe2024!)
                 </p>
             </CardHeader>
           <CardContent className="space-y-6">
