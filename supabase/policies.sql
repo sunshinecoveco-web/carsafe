@@ -1,5 +1,6 @@
 -- CarSafe RLS policies and explicit grants
--- Run this in the Supabase SQL Editor BEFORE seed.sql.
+-- Run this in the Supabase SQL Editor.
+-- Idempotent: safe to re-run; existing policies are dropped and recreated.
 -- Required for Supabase security compliance (explicit GRANTs mandatory from Oct 2026).
 --
 -- PHASE NOTE: The app currently uses localStorage-based mock auth, not Supabase Auth.
@@ -33,79 +34,88 @@ GRANT INSERT, UPDATE, DELETE    ON public.activity_logs TO authenticated;
 
 -- ─── vehicles ─────────────────────────────────────────────────────────────────
 
--- CURRENT: allow anon read (mock-auth phase)
+DROP POLICY IF EXISTS "anon_read_vehicles" ON public.vehicles;
 CREATE POLICY "anon_read_vehicles"
   ON public.vehicles FOR SELECT TO anon
   USING (true);
 
 -- FUTURE (Supabase Auth): replace the policy above with these:
+-- DROP POLICY IF EXISTS "owners_read_own_vehicles" ON public.vehicles;
 -- CREATE POLICY "owners_read_own_vehicles"
 --   ON public.vehicles FOR SELECT TO authenticated
 --   USING (owner_id = auth.uid()::text);
+-- DROP POLICY IF EXISTS "owners_update_own_vehicles" ON public.vehicles;
 -- CREATE POLICY "owners_update_own_vehicles"
 --   ON public.vehicles FOR UPDATE TO authenticated
 --   USING (owner_id = auth.uid()::text);
+-- DROP POLICY IF EXISTS "owners_insert_vehicles" ON public.vehicles;
 -- CREATE POLICY "owners_insert_vehicles"
 --   ON public.vehicles FOR INSERT TO authenticated
 --   WITH CHECK (owner_id = auth.uid()::text);
 
 -- ─── service_logs ─────────────────────────────────────────────────────────────
 
--- CURRENT: allow anon read (mock-auth phase)
+DROP POLICY IF EXISTS "anon_read_service_logs" ON public.service_logs;
 CREATE POLICY "anon_read_service_logs"
   ON public.service_logs FOR SELECT TO anon
   USING (true);
 
 -- FUTURE (Supabase Auth):
+-- DROP POLICY IF EXISTS "read_service_logs_for_own_vehicles" ON public.service_logs;
 -- CREATE POLICY "read_service_logs_for_own_vehicles"
 --   ON public.service_logs FOR SELECT TO authenticated
 --   USING (vehicle_id IN (SELECT id FROM public.vehicles WHERE owner_id = auth.uid()::text));
+-- DROP POLICY IF EXISTS "insert_service_logs_for_own_vehicles" ON public.service_logs;
 -- CREATE POLICY "insert_service_logs_for_own_vehicles"
 --   ON public.service_logs FOR INSERT TO authenticated
 --   WITH CHECK (vehicle_id IN (SELECT id FROM public.vehicles WHERE owner_id = auth.uid()::text));
 
 -- ─── fuel_records ─────────────────────────────────────────────────────────────
 
--- CURRENT: allow anon read (mock-auth phase)
+DROP POLICY IF EXISTS "anon_read_fuel_records" ON public.fuel_records;
 CREATE POLICY "anon_read_fuel_records"
   ON public.fuel_records FOR SELECT TO anon
   USING (true);
 
 -- FUTURE (Supabase Auth):
+-- DROP POLICY IF EXISTS "read_fuel_records_for_own_vehicles" ON public.fuel_records;
 -- CREATE POLICY "read_fuel_records_for_own_vehicles"
 --   ON public.fuel_records FOR SELECT TO authenticated
 --   USING (vehicle_id IN (SELECT id FROM public.vehicles WHERE owner_id = auth.uid()::text));
 
 -- ─── activity_logs ────────────────────────────────────────────────────────────
 
--- CURRENT: allow anon read (mock-auth phase)
+DROP POLICY IF EXISTS "anon_read_activity_logs" ON public.activity_logs;
 CREATE POLICY "anon_read_activity_logs"
   ON public.activity_logs FOR SELECT TO anon
   USING (true);
 
 -- FUTURE (Supabase Auth):
+-- DROP POLICY IF EXISTS "read_activity_logs_for_own_vehicles" ON public.activity_logs;
 -- CREATE POLICY "read_activity_logs_for_own_vehicles"
 --   ON public.activity_logs FOR SELECT TO authenticated
 --   USING (vehicle_id IN (SELECT id FROM public.vehicles WHERE owner_id = auth.uid()::text));
 
 -- ─── dealers ──────────────────────────────────────────────────────────────────
 
--- Dealers are a public reference table — all roles can read.
+DROP POLICY IF EXISTS "public_read_dealers" ON public.dealers;
 CREATE POLICY "public_read_dealers"
   ON public.dealers FOR SELECT
   USING (true);
 
 -- ─── users ────────────────────────────────────────────────────────────────────
 
--- CURRENT: allow anon read (mock-auth phase)
+DROP POLICY IF EXISTS "anon_read_users" ON public.users;
 CREATE POLICY "anon_read_users"
   ON public.users FOR SELECT TO anon
   USING (true);
 
 -- FUTURE (Supabase Auth):
+-- DROP POLICY IF EXISTS "users_read_own_profile" ON public.users;
 -- CREATE POLICY "users_read_own_profile"
 --   ON public.users FOR SELECT TO authenticated
 --   USING (id = auth.uid()::text);
+-- DROP POLICY IF EXISTS "users_update_own_profile" ON public.users;
 -- CREATE POLICY "users_update_own_profile"
 --   ON public.users FOR UPDATE TO authenticated
 --   USING (id = auth.uid()::text);
