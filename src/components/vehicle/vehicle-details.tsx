@@ -18,7 +18,7 @@ import { VehicleChatCard } from "./vehicle-chat-card";
 import { VehicleReport } from "./vehicle-report";
 import { getDealers } from "@/lib/data";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
-import { ShieldAlert, Share2, Nfc } from "lucide-react";
+import { ShieldAlert, Share2, Nfc, Gauge, Palette, Hash } from "lucide-react";
 import { AiSalesCopyCard } from "./ai-sales-copy-card";
 import { Button } from "../ui/button";
 import { PublicLinkCard } from "./public-link-card";
@@ -166,6 +166,28 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
           <Badge variant="outline" className="mb-2">{vehicle.year}</Badge>
           <h1 className="text-4xl font-bold tracking-tight text-foreground">{vehicle.make} {vehicle.model}</h1>
           <p className="mt-1 text-lg text-muted-foreground font-mono">{vehicle.vin}</p>
+          {(vehicle.registrationNumber || vehicle.colour || vehicle.mileage != null) && (
+            <div className="mt-2 flex flex-wrap gap-3">
+              {vehicle.registrationNumber && (
+                <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Hash className="h-3.5 w-3.5" />
+                  {vehicle.registrationNumber}
+                </span>
+              )}
+              {vehicle.colour && (
+                <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Palette className="h-3.5 w-3.5" />
+                  {vehicle.colour}
+                </span>
+              )}
+              {vehicle.mileage != null && (
+                <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <Gauge className="h-3.5 w-3.5" />
+                  {vehicle.mileage.toLocaleString()} km
+                </span>
+              )}
+            </div>
+          )}
           <div className="mt-4">{getStatusBadge()}</div>
         </div>
         {isOwner && (
