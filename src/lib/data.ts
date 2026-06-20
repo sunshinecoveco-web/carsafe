@@ -227,6 +227,17 @@ export interface AddVehicleInput {
   licenceDiscFile?: File;
 }
 
+export interface UpdateVehicleInput {
+  make: string;
+  model: string;
+  year: number;
+  registrationNumber: string;
+  colour: string;
+  mileage: number;
+  status: Vehicle['status'];
+  licenceDiscFile?: File;
+}
+
 export async function addVehicle(ownerId: string, input: AddVehicleInput): Promise<Vehicle> {
   let licenceDiscUrl: string | null = null;
 
@@ -273,6 +284,59 @@ export async function addVehicle(ownerId: string, input: AddVehicleInput): Promi
     user_id: ownerId,
     action: 'Vehicle Created',
     details: `${input.year} ${input.make} ${input.model} added by owner`,
+    hash: '',
+    previous_hash: '',
+  });
+
+  return toVehicle(row as DbVehicle, [], [], []);
+}
+
+export async function updateVehicle(vehicleId: string, ownerId: string, input: UpdateVehicleInput): Promise<Vehicle> {
+  let licenceDiscUrl: string | undefined;
+
+  if (input.licenceDiscFile) {
+    const ext = input.licenceDiscFile.name.split('.').pop() ?? 'jpg';
+    const path = `${ownerId}/${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from('licence-discs')
+      .upload(path, input.licenceDiscFile, { upsert: false });
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage
+        .from('licence-discs')
+        .getPublicUrl(path);
+      licenceDiscUrl = urlData.publicUrl;
+    }
+  }
+
+  const patch: Record<string, unknown> = {
+    make: input.make,
+    model: input.model,
+    year: input.year,
+    registration_number: input.registrationNumber,
+    colour: input.colour,
+    mileage: input.mileage,
+    status: input.status,
+  };
+  if (licenceDiscUrl) {
+    patch.licence_disc_url = licenceDiscUrl;
+    patch.image_url = licenceDiscUrl;
+  }
+
+  const { data: row, error } = await supabase
+    .from('vehicles')
+    .update(patch)
+    .eq('id', vehicleId)
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  await supabase.from('activity_logs').insert({
+    vehicle_id: vehicleId,
+    occurred_at: new Date().toISOString(),
+    user_id: ownerId,
+    action: 'Vehicle Updated',
+    details: `${input.year} ${input.make} ${input.model} details updated by owner`,
     hash: '',
     previous_hash: '',
   });

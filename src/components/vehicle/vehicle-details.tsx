@@ -21,6 +21,7 @@ import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { ShieldAlert, Share2, Nfc, Gauge, Palette, Hash } from "lucide-react";
 import { AiSalesCopyCard } from "./ai-sales-copy-card";
 import { Button } from "../ui/button";
+import { EditVehicleDialog } from "./edit-vehicle-dialog";
 import { PublicLinkCard } from "./public-link-card";
 import { IncentivesCard } from "./incentives-card";
 import { ShareWithDealerCard } from "./share-with-dealer-card";
@@ -192,6 +193,7 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
         </div>
         {isOwner && (
           <div className="flex items-center gap-2">
+            <EditVehicleDialog vehicle={vehicle} ownerId={auth.userId!} onVehicleUpdated={handleUpdate} />
             <Button variant="outline" onClick={() => toast({ title: "NFC not configured", description: "This is where NFC tap functionality would be implemented for sharing."})}>
               <Nfc className="mr-2 h-4 w-4" />
               Share via NFC
