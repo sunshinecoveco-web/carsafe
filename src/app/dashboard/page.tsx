@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { Vehicle } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Tag } from "lucide-react";
+import { AddVehicleDialog } from "@/components/vehicle/add-vehicle-dialog";
 
 export default function DashboardPage() {
   const auth = useAuth();
@@ -99,13 +100,20 @@ export default function DashboardPage() {
   }
 
   // Owner view
+  const handleVehicleAdded = (vehicle: Vehicle) => {
+    setVehicles((prev) => [vehicle, ...prev]);
+  };
+
   return (
     <div className="container py-8 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">My Vehicles</h1>
-        <p className="mt-1 text-muted-foreground">
-          {vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""} in your fleet
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">My Vehicles</h1>
+          <p className="mt-1 text-muted-foreground">
+            {vehicles.length} vehicle{vehicles.length !== 1 ? "s" : ""} in your fleet
+          </p>
+        </div>
+        <AddVehicleDialog ownerId={auth.userId!} onVehicleAdded={handleVehicleAdded} />
       </div>
       <VehicleList vehicles={vehicles} />
     </div>

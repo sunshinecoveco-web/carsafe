@@ -4,6 +4,10 @@
 -- ─── vehicles: add missing columns ───────────────────────────────────────────
 
 ALTER TABLE public.vehicles
+  ADD COLUMN IF NOT EXISTS registration_number         TEXT,
+  ADD COLUMN IF NOT EXISTS colour                      TEXT,
+  ADD COLUMN IF NOT EXISTS mileage                     INTEGER DEFAULT 0,
+  ADD COLUMN IF NOT EXISTS licence_disc_url            TEXT,
   ADD COLUMN IF NOT EXISTS image_hint                  TEXT,
   ADD COLUMN IF NOT EXISTS insurance_provider          TEXT,
   ADD COLUMN IF NOT EXISTS insurance_policy_number     TEXT,

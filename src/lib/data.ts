@@ -11,6 +11,10 @@ type DbVehicle = {
   model: string;
   year: number;
   vin: string;
+  registration_number: string | null;
+  colour: string | null;
+  mileage: number | null;
+  licence_disc_url: string | null;
   status: string;
   image_url: string;
   image_hint: string | null;
@@ -124,6 +128,10 @@ function toVehicle(
     model: row.model,
     year: row.year,
     vin: row.vin,
+    registrationNumber: row.registration_number ?? undefined,
+    colour: row.colour ?? undefined,
+    mileage: row.mileage ?? undefined,
+    licenceDiscUrl: row.licence_disc_url ?? undefined,
     status: row.status as Vehicle['status'],
     imageUrl: row.image_url,
     imageHint: row.image_hint ?? '',
@@ -205,6 +213,71 @@ export async function getVehicleById(id: string): Promise<Vehicle | undefined> {
     (fuelRecords ?? []) as DbFuelRecord[],
     (activityLogs ?? []) as DbActivityLog[],
   );
+}
+
+export interface AddVehicleInput {
+  make: string;
+  model: string;
+  year: number;
+  registrationNumber: string;
+  vin: string;
+  colour: string;
+  mileage: number;
+  status: Vehicle['status'];
+  licenceDiscFile?: File;
+}
+
+export async function addVehicle(ownerId: string, input: AddVehicleInput): Promise<Vehicle> {
+  let licenceDiscUrl: string | null = null;
+
+  if (input.licenceDiscFile) {
+    const ext = input.licenceDiscFile.name.split('.').pop() ?? 'jpg';
+    const path = `${ownerId}/${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage
+      .from('licence-discs')
+      .upload(path, input.licenceDiscFile, { upsert: false });
+    if (!uploadError) {
+      const { data: urlData } = supabase.storage
+        .from('licence-discs')
+        .getPublicUrl(path);
+      licenceDiscUrl = urlData.publicUrl;
+    }
+  }
+
+  const { data: row, error } = await supabase
+    .from('vehicles')
+    .insert({
+      owner_id: ownerId,
+      make: input.make,
+      model: input.model,
+      year: input.year,
+      registration_number: input.registrationNumber,
+      vin: input.vin,
+      colour: input.colour,
+      mileage: input.mileage,
+      status: input.status,
+      image_url: licenceDiscUrl ?? '',
+      licence_disc_url: licenceDiscUrl,
+      allow_dealer_service_access: false,
+      allow_reseller_access: false,
+      allow_insurance_access: false,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+
+  await supabase.from('activity_logs').insert({
+    vehicle_id: row.id,
+    occurred_at: new Date().toISOString(),
+    user_id: ownerId,
+    action: 'Vehicle Created',
+    details: `${input.year} ${input.make} ${input.model} added by owner`,
+    hash: '',
+    previous_hash: '',
+  });
+
+  return toVehicle(row as DbVehicle, [], [], []);
 }
 
 export async function getDealers(): Promise<Dealer[]> {

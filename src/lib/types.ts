@@ -74,6 +74,10 @@ export interface Vehicle {
   model: string;
   year: number;
   vin: string;
+  registrationNumber?: string;
+  colour?: string;
+  mileage?: number;
+  licenceDiscUrl?: string;
   status: 'active' | 'for_sale' | 'in_claim';
   imageUrl: string;
   imageHint?: string;
