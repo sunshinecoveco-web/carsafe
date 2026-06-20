@@ -2,7 +2,7 @@ import type { Vehicle } from "@/lib/types";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Link from "next/link";
 import { Badge } from "../ui/badge";
-import { ArrowRight, Car, Wrench, Palette } from "lucide-react";
+import { ArrowRight, Car, Wrench, Palette, Gauge } from "lucide-react";
 
 function getStatusVariant(status: Vehicle['status']): 'default' | 'secondary' | 'destructive' | 'outline' {
   if (status === 'for_sale') return 'secondary';
@@ -74,6 +74,12 @@ export function VehicleList({ vehicles }: { vehicles: Vehicle[] }) {
                     <Badge variant={getStatusVariant(vehicle.status)} className="text-xs">
                       {getStatusLabel(vehicle.status)}
                     </Badge>
+                    {vehicle.mileage != null && (
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Gauge className="h-3 w-3" />
+                        {vehicle.mileage.toLocaleString()} km
+                      </span>
+                    )}
                     {lastService && (
                       <span className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Wrench className="h-3 w-3" />
