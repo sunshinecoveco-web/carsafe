@@ -27,10 +27,10 @@ GRANT SELECT                    ON public.dealers       TO anon, authenticated;
 GRANT SELECT                    ON public.users         TO anon, authenticated;
 
 -- Owners will need write access once writes are wired through Supabase:
-GRANT INSERT, UPDATE, DELETE    ON public.vehicles      TO authenticated;
+GRANT INSERT, UPDATE, DELETE    ON public.vehicles      TO anon, authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.service_logs  TO authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.fuel_records  TO authenticated;
-GRANT INSERT, UPDATE, DELETE    ON public.activity_logs TO authenticated;
+GRANT INSERT, UPDATE, DELETE    ON public.activity_logs TO anon, authenticated;
 
 -- ─── vehicles ─────────────────────────────────────────────────────────────────
 
@@ -38,6 +38,11 @@ DROP POLICY IF EXISTS "anon_read_vehicles" ON public.vehicles;
 CREATE POLICY "anon_read_vehicles"
   ON public.vehicles FOR SELECT TO anon
   USING (true);
+
+DROP POLICY IF EXISTS "anon_insert_vehicles" ON public.vehicles;
+CREATE POLICY "anon_insert_vehicles"
+  ON public.vehicles FOR INSERT TO anon
+  WITH CHECK (true);
 
 -- FUTURE (Supabase Auth): replace the policy above with these:
 -- DROP POLICY IF EXISTS "owners_read_own_vehicles" ON public.vehicles;
@@ -89,6 +94,11 @@ DROP POLICY IF EXISTS "anon_read_activity_logs" ON public.activity_logs;
 CREATE POLICY "anon_read_activity_logs"
   ON public.activity_logs FOR SELECT TO anon
   USING (true);
+
+DROP POLICY IF EXISTS "anon_insert_activity_logs" ON public.activity_logs;
+CREATE POLICY "anon_insert_activity_logs"
+  ON public.activity_logs FOR INSERT TO anon
+  WITH CHECK (true);
 
 -- FUTURE (Supabase Auth):
 -- DROP POLICY IF EXISTS "read_activity_logs_for_own_vehicles" ON public.activity_logs;
