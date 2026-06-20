@@ -44,7 +44,13 @@ CREATE POLICY "anon_insert_vehicles"
   ON public.vehicles FOR INSERT TO anon
   WITH CHECK (true);
 
--- FUTURE (Supabase Auth): replace the policy above with these:
+DROP POLICY IF EXISTS "anon_update_vehicles" ON public.vehicles;
+CREATE POLICY "anon_update_vehicles"
+  ON public.vehicles FOR UPDATE TO anon
+  USING (true)
+  WITH CHECK (true);
+
+-- FUTURE (Supabase Auth): replace the policies above with these:
 -- DROP POLICY IF EXISTS "owners_read_own_vehicles" ON public.vehicles;
 -- CREATE POLICY "owners_read_own_vehicles"
 --   ON public.vehicles FOR SELECT TO authenticated
