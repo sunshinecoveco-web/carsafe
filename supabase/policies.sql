@@ -103,6 +103,40 @@ CREATE POLICY "public_read_dealers"
   ON public.dealers FOR SELECT
   USING (true);
 
+-- ─── storage: licence-discs bucket ───────────────────────────────────────────
+
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES (
+  'licence-discs',
+  'licence-discs',
+  true,
+  5242880,
+  ARRAY['image/jpeg','image/png','image/webp','image/heic']
+)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "owners can upload licence discs"   ON storage.objects;
+DROP POLICY IF EXISTS "owners can delete licence discs"   ON storage.objects;
+DROP POLICY IF EXISTS "public can read licence discs"     ON storage.objects;
+
+CREATE POLICY "owners can upload licence discs"
+  ON storage.objects FOR INSERT TO authenticated
+  WITH CHECK (
+    bucket_id = 'licence-discs'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+CREATE POLICY "owners can delete licence discs"
+  ON storage.objects FOR DELETE TO authenticated
+  USING (
+    bucket_id = 'licence-discs'
+    AND (storage.foldername(name))[1] = auth.uid()::text
+  );
+
+CREATE POLICY "public can read licence discs"
+  ON storage.objects FOR SELECT TO public
+  USING (bucket_id = 'licence-discs');
+
 -- ─── users ────────────────────────────────────────────────────────────────────
 
 DROP POLICY IF EXISTS "anon_read_users" ON public.users;
