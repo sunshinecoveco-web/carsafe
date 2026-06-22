@@ -92,7 +92,7 @@ export function DealerDashboard({ profile }: DealerDashboardProps) {
                 <Car className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{vehicles.length}</p>
+                {loading ? <Skeleton className="h-8 w-8 mb-1" /> : <p className="text-2xl font-bold">{vehicles.length}</p>}
                 <p className="text-xs text-muted-foreground">Total Vehicles</p>
               </div>
             </div>
@@ -105,7 +105,7 @@ export function DealerDashboard({ profile }: DealerDashboardProps) {
                 <Tag className="h-4 w-4 text-green-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{forSale}</p>
+                {loading ? <Skeleton className="h-8 w-8 mb-1" /> : <p className="text-2xl font-bold">{forSale}</p>}
                 <p className="text-xs text-muted-foreground">For Sale</p>
               </div>
             </div>

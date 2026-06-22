@@ -72,7 +72,7 @@ export function ResellerDashboard({ profile }: ResellerDashboardProps) {
                 <Car className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{loading ? "—" : vehicles.length}</p>
+                {loading ? <Skeleton className="h-8 w-8 mb-1" /> : <p className="text-2xl font-bold">{vehicles.length}</p>}
                 <p className="text-xs text-muted-foreground">Assigned Vehicles</p>
               </div>
             </div>
@@ -85,7 +85,7 @@ export function ResellerDashboard({ profile }: ResellerDashboardProps) {
                 <TrendingUp className="h-4 w-4 text-green-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{loading ? "—" : forSale}</p>
+                {loading ? <Skeleton className="h-8 w-8 mb-1" /> : <p className="text-2xl font-bold">{forSale}</p>}
                 <p className="text-xs text-muted-foreground">For Sale</p>
               </div>
             </div>
