@@ -1,27 +1,48 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/use-auth";
 import { getVehicles } from "@/lib/data";
+import { getDealerProfile } from "@/lib/dealer";
 import { VehicleList } from "@/components/dashboard/vehicle-list";
 import { DealerDashboard } from "@/components/dashboard/dealer-dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Vehicle } from "@/lib/types";
+import type { DealerProfile } from "@/lib/dealer";
 import { Badge } from "@/components/ui/badge";
 import { Shield, Tag } from "lucide-react";
 import { AddVehicleDialog } from "@/components/vehicle/add-vehicle-dialog";
 
 export default function DashboardPage() {
   const auth = useAuth();
+  const router = useRouter();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [dealerProfile, setDealerProfile] = useState<DealerProfile | null | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!auth.isAuthenticated) return;
+
+    if (auth.role === "dealer") {
+      getDealerProfile(auth.userId!)
+        .then(profile => {
+          if (!profile) {
+            router.push("/dealer/setup");
+          } else {
+            setDealerProfile(profile);
+            setLoading(false);
+          }
+        })
+        .catch(console.error);
+      return;
+    }
+
     getVehicles()
       .then((v) => setVehicles(v))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  }, [auth.isAuthenticated, auth.role, auth.userId, router]);
 
   if (loading || !auth.isAuthenticated) {
     return (
@@ -37,10 +58,8 @@ export default function DashboardPage() {
   }
 
   if (auth.role === "dealer") {
-    const assigned = vehicles.filter((v) =>
-      v.approvedDealerIds?.includes(auth.userId!)
-    );
-    return <DealerDashboard vehicles={assigned} dealerId={auth.userId!} />;
+    if (!dealerProfile) return null; // redirecting to /dealer/setup
+    return <DealerDashboard profile={dealerProfile} />;
   }
 
   if (auth.role === "insurance") {
