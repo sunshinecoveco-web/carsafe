@@ -33,6 +33,7 @@ import { InsuranceDealerChatCard } from "./insurance-dealer-chat-card";
 import { FuelUsageCard } from "./fuel-usage-card";
 import { InsurerFlagsCard } from "./insurer-flags-card";
 import { InsurerLinkRequestModal } from "./insurer-link-request-modal";
+import { InsurerServiceHistoryCard } from "./insurer-service-history-card";
 import { cn } from "@/lib/utils";
 
 export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }) {
@@ -133,6 +134,7 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
   const showInsurerFlags = (auth.role === 'insurance' && isAssignedInsurance) || (auth.role === 'dealer' && vehicle.approvedDealerIds?.includes(auth.userId!)) || (auth.role === 'reseller' && vehicle.approvedResellerIds?.includes(auth.userId!));
   const canAddInsurerFlags = auth.role === 'insurance' && isAssignedInsurance;
   const showLinkToOwner = auth.role === 'insurance' && isAssignedInsurance && vehicle.status === 'insurer_added' && (!vehicle.ownerId || vehicle.ownerId === '');
+  const showInsurerServiceHistory = auth.role === 'insurance' && isAssignedInsurance;
 
   const getStatusBadge = () => {
     if (vehicle.status === 'for_sale') return <Badge variant="secondary">For Sale</Badge>;
@@ -234,14 +236,18 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
         <TabsContent value="overview" className="mt-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <div className="space-y-8">
-                <ServiceHistoryCard 
+                {showInsurerServiceHistory ? (
+                  <InsurerServiceHistoryCard vehicle={vehicle} />
+                ) : (
+                  <ServiceHistoryCard 
                     serviceHistory={vehicle.serviceHistory}
                     onUpdateHistory={(newHistory: ServiceRecord[]) => handleUpdate({ serviceHistory: newHistory })}
                     vehicleId={vehicle.id}
                     userRole={auth.role}
                     userId={auth.userId}
                     isDealerVerified={isDealerVerified}
-                />
+                  />
+                )}
                 </div>
                 <div className="space-y-8">
                   {showInsurerFlags && (
