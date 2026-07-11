@@ -7,12 +7,14 @@ import { ArrowRight, Car, Wrench, Palette, Gauge } from "lucide-react";
 function getStatusVariant(status: Vehicle['status']): 'default' | 'secondary' | 'destructive' | 'outline' {
   if (status === 'for_sale') return 'secondary';
   if (status === 'in_claim') return 'destructive';
+  if (status === 'insurer_added') return 'outline';
   return 'outline';
 }
 
 function getStatusLabel(status: Vehicle['status']): string {
   if (status === 'for_sale') return 'For Sale';
   if (status === 'in_claim') return 'In Claim';
+  if (status === 'insurer_added') return 'Insurer Added';
   return 'Active';
 }
 

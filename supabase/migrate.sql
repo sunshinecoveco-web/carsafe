@@ -47,6 +47,20 @@ CREATE TABLE IF NOT EXISTS public.fuel_records (
   created_at TIMESTAMPTZ   DEFAULT now()
 );
 
+-- ─── vehicle_policies: new table ───────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS public.vehicle_policies (
+  id                UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  vehicle_id        UUID        NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
+  insurer_id        UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  policy_number     TEXT        NOT NULL,
+  cover_type        TEXT        NOT NULL,
+  inception_date    DATE,
+  premium_amount    NUMERIC(10,2),
+  insurer_reference TEXT,
+  created_at        TIMESTAMPTZ DEFAULT now()
+);
+
 -- ─── activity_logs: new table ─────────────────────────────────────────────────
 -- user_id is TEXT (not UUID) because mock-auth IDs are strings like 'dealer-1'.
 

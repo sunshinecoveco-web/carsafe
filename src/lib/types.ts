@@ -78,7 +78,7 @@ export interface Vehicle {
   colour?: string;
   mileage?: number;
   licenceDiscUrl?: string;
-  status: 'active' | 'for_sale' | 'in_claim';
+  status: 'active' | 'for_sale' | 'in_claim' | 'insurer_added';
   imageUrl: string;
   imageHint?: string;
   serviceHistory: ServiceRecord[];

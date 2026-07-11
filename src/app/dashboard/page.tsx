@@ -15,6 +15,7 @@ import type { DealerProfile } from "@/lib/dealer";
 import type { ResellerProfile } from "@/lib/reseller";
 import { Shield } from "lucide-react";
 import { AddVehicleDialog } from "@/components/vehicle/add-vehicle-dialog";
+import { InsurerAddVehicleDialog } from "@/components/insurance/insurer-add-vehicle-dialog";
 
 export default function DashboardPage() {
   const auth = useAuth();
@@ -23,6 +24,10 @@ export default function DashboardPage() {
   const [dealerProfile, setDealerProfile] = useState<DealerProfile | null | undefined>(undefined);
   const [resellerProfile, setResellerProfile] = useState<ResellerProfile | null | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+
+  const handleVehicleAdded = (vehicle: Vehicle) => {
+    setVehicles((prev) => [vehicle, ...prev]);
+  };
 
   useEffect(() => {
     if (!auth.isAuthenticated) return;
@@ -106,6 +111,7 @@ export default function DashboardPage() {
             <Shield className="h-4 w-4" />
             <span className="text-sm font-medium">Read-Only Access</span>
           </div>
+          <InsurerAddVehicleDialog userId={auth.userId!} onVehicleAdded={handleVehicleAdded} />
         </div>
         <VehicleList vehicles={assigned} />
       </div>
@@ -113,10 +119,6 @@ export default function DashboardPage() {
   }
 
   // Owner view
-  const handleVehicleAdded = (vehicle: Vehicle) => {
-    setVehicles((prev) => [vehicle, ...prev]);
-  };
-
   return (
     <div className="container py-8 space-y-6">
       <div className="flex items-start justify-between gap-4">
