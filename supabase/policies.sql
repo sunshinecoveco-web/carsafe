@@ -15,6 +15,7 @@ ALTER TABLE public.service_logs  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.fuel_records  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.activity_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.vehicle_flags ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vehicle_link_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.dealers       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.users         ENABLE ROW LEVEL SECURITY;
 
@@ -25,6 +26,7 @@ GRANT SELECT                    ON public.service_logs  TO anon, authenticated;
 GRANT SELECT                    ON public.fuel_records  TO anon, authenticated;
 GRANT SELECT                    ON public.activity_logs TO anon, authenticated;
 GRANT SELECT                    ON public.vehicle_flags TO anon, authenticated;
+GRANT SELECT                    ON public.vehicle_link_requests TO anon, authenticated;
 GRANT SELECT                    ON public.dealers       TO anon, authenticated;
 GRANT SELECT                    ON public.users         TO anon, authenticated;
 
@@ -34,6 +36,7 @@ GRANT INSERT, UPDATE, DELETE    ON public.service_logs  TO authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.fuel_records  TO authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.activity_logs TO anon, authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.vehicle_flags TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE    ON public.vehicle_link_requests TO anon, authenticated;
 
 -- ─── vehicles ─────────────────────────────────────────────────────────────────
 
@@ -125,6 +128,18 @@ CREATE POLICY "anon_read_vehicle_flags"
 DROP POLICY IF EXISTS "anon_insert_vehicle_flags" ON public.vehicle_flags;
 CREATE POLICY "anon_insert_vehicle_flags"
   ON public.vehicle_flags FOR INSERT TO anon
+  WITH CHECK (true);
+
+-- ─── vehicle_link_requests ─────────────────────────────────────────────────
+
+DROP POLICY IF EXISTS "anon_read_vehicle_link_requests" ON public.vehicle_link_requests;
+CREATE POLICY "anon_read_vehicle_link_requests"
+  ON public.vehicle_link_requests FOR SELECT TO anon
+  USING (true);
+
+DROP POLICY IF EXISTS "anon_insert_vehicle_link_requests" ON public.vehicle_link_requests;
+CREATE POLICY "anon_insert_vehicle_link_requests"
+  ON public.vehicle_link_requests FOR INSERT TO anon
   WITH CHECK (true);
 
 -- ─── dealers ──────────────────────────────────────────────────────────────────

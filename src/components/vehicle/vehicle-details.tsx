@@ -32,6 +32,7 @@ import { DealerChatCard } from "./dealer-chat-card";
 import { InsuranceDealerChatCard } from "./insurance-dealer-chat-card";
 import { FuelUsageCard } from "./fuel-usage-card";
 import { InsurerFlagsCard } from "./insurer-flags-card";
+import { InsurerLinkRequestModal } from "./insurer-link-request-modal";
 import { cn } from "@/lib/utils";
 
 export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }) {
@@ -131,6 +132,7 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
   const showInsuranceChat = (isAssignedInsurance || isAssignedDealerForClaim) && vehicle.status === 'in_claim';
   const showInsurerFlags = (auth.role === 'insurance' && isAssignedInsurance) || (auth.role === 'dealer' && vehicle.approvedDealerIds?.includes(auth.userId!)) || (auth.role === 'reseller' && vehicle.approvedResellerIds?.includes(auth.userId!));
   const canAddInsurerFlags = auth.role === 'insurance' && isAssignedInsurance;
+  const showLinkToOwner = auth.role === 'insurance' && isAssignedInsurance && vehicle.status === 'insurer_added' && (!vehicle.ownerId || vehicle.ownerId === '');
 
   const getStatusBadge = () => {
     if (vehicle.status === 'for_sale') return <Badge variant="secondary">For Sale</Badge>;
@@ -194,18 +196,23 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
           )}
           <div className="mt-4">{getStatusBadge()}</div>
         </div>
-        {isOwner && (
-          <div className="flex items-center gap-2">
-            <EditVehicleDialog vehicle={vehicle} ownerId={auth.userId!} onVehicleUpdated={handleUpdate} />
-            <Button variant="outline" onClick={() => toast({ title: "NFC not configured", description: "This is where NFC tap functionality would be implemented for sharing."})}>
-              <Nfc className="mr-2 h-4 w-4" />
-              Share via NFC
-            </Button>
-            <Button variant="outline" size="icon" onClick={handleShare} aria-label="Share Vehicle">
-              <Share2 className="h-5 w-5" />
-            </Button>
-          </div>
-        )}
+        <div className="flex items-center gap-2">
+          {isOwner && (
+            <>
+              <EditVehicleDialog vehicle={vehicle} ownerId={auth.userId!} onVehicleUpdated={handleUpdate} />
+              <Button variant="outline" onClick={() => toast({ title: "NFC not configured", description: "This is where NFC tap functionality would be implemented for sharing."})}>
+                <Nfc className="mr-2 h-4 w-4" />
+                Share via NFC
+              </Button>
+              <Button variant="outline" size="icon" onClick={handleShare} aria-label="Share Vehicle">
+                <Share2 className="h-5 w-5" />
+              </Button>
+            </>
+          )}
+          {showLinkToOwner && (
+            <InsurerLinkRequestModal vehicle={vehicle} userId={auth.userId} canRequest={true} />
+          )}
+        </div>
       </div>
 
        {isReadOnly && (

@@ -73,6 +73,17 @@ CREATE TABLE IF NOT EXISTS public.vehicle_flags (
   created_at    TIMESTAMPTZ DEFAULT now()
 );
 
+-- ─── vehicle_link_requests: new table ───────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS public.vehicle_link_requests (
+  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  vehicle_id    UUID        NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
+  insurer_id    UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  owner_id      UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  status        TEXT        NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
+  created_at    TIMESTAMPTZ DEFAULT now()
+);
+
 -- ─── activity_logs: new table ─────────────────────────────────────────────────
 -- user_id is TEXT (not UUID) because mock-auth IDs are strings like 'dealer-1'.
 
