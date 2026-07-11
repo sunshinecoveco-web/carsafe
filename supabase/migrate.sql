@@ -61,6 +61,18 @@ CREATE TABLE IF NOT EXISTS public.vehicle_policies (
   created_at        TIMESTAMPTZ DEFAULT now()
 );
 
+-- ─── vehicle_flags: new table ───────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS public.vehicle_flags (
+  id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+  vehicle_id    UUID        NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
+  insurer_id    UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  flag_type     TEXT        NOT NULL,
+  description   TEXT        NOT NULL,
+  visibility    TEXT        NOT NULL DEFAULT 'internal' CHECK (visibility IN ('internal', 'external')),
+  created_at    TIMESTAMPTZ DEFAULT now()
+);
+
 -- ─── activity_logs: new table ─────────────────────────────────────────────────
 -- user_id is TEXT (not UUID) because mock-auth IDs are strings like 'dealer-1'.
 

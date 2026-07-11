@@ -31,6 +31,7 @@ import { RecurringProblemsDetectorCard } from "./recurring-problems-detector-car
 import { DealerChatCard } from "./dealer-chat-card";
 import { InsuranceDealerChatCard } from "./insurance-dealer-chat-card";
 import { FuelUsageCard } from "./fuel-usage-card";
+import { InsurerFlagsCard } from "./insurer-flags-card";
 import { cn } from "@/lib/utils";
 
 export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }) {
@@ -128,6 +129,8 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
   const isAssignedInsurance = auth.role === 'insurance' && vehicle.approvedInsuranceIds?.includes(auth.userId!);
   const isAssignedDealerForClaim = auth.role === 'dealer' && vehicle.status === 'in_claim' && vehicle.approvedDealerIds?.includes(auth.userId!);
   const showInsuranceChat = (isAssignedInsurance || isAssignedDealerForClaim) && vehicle.status === 'in_claim';
+  const showInsurerFlags = (auth.role === 'insurance' && isAssignedInsurance) || (auth.role === 'dealer' && vehicle.approvedDealerIds?.includes(auth.userId!)) || (auth.role === 'reseller' && vehicle.approvedResellerIds?.includes(auth.userId!));
+  const canAddInsurerFlags = auth.role === 'insurance' && isAssignedInsurance;
 
   const getStatusBadge = () => {
     if (vehicle.status === 'for_sale') return <Badge variant="secondary">For Sale</Badge>;
@@ -234,6 +237,14 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
                 />
                 </div>
                 <div className="space-y-8">
+                  {showInsurerFlags && (
+                    <InsurerFlagsCard
+                      vehicle={vehicle}
+                      userRole={auth.role}
+                      userId={auth.userId}
+                      canAddFlag={canAddInsurerFlags}
+                    />
+                  )}
                   <ActivityLogCard activityLog={vehicle.activityLog} />
                 </div>
             </div>
