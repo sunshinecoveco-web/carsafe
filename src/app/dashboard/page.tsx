@@ -16,6 +16,7 @@ import type { ResellerProfile } from "@/lib/reseller";
 import { Shield } from "lucide-react";
 import { AddVehicleDialog } from "@/components/vehicle/add-vehicle-dialog";
 import { InsurerAddVehicleDialog } from "@/components/insurance/insurer-add-vehicle-dialog";
+import { OwnerPendingRequests } from "@/components/dashboard/owner-pending-requests";
 
 export default function DashboardPage() {
   const auth = useAuth();
@@ -130,6 +131,7 @@ export default function DashboardPage() {
         </div>
         <AddVehicleDialog ownerId={auth.userId!} onVehicleAdded={handleVehicleAdded} />
       </div>
+      <OwnerPendingRequests />
       <VehicleList vehicles={vehicles} />
     </div>
   );
