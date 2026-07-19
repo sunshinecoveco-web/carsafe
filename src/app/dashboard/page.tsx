@@ -9,6 +9,7 @@ import { getResellerProfile } from "@/lib/reseller";
 import { VehicleList } from "@/components/dashboard/vehicle-list";
 import { DealerDashboard } from "@/components/dashboard/dealer-dashboard";
 import { ResellerDashboard } from "@/components/dashboard/reseller-dashboard";
+import { WorkshopDashboard } from "@/components/dashboard/workshop-dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Vehicle } from "@/lib/types";
 import type { DealerProfile } from "@/lib/dealer";
@@ -88,6 +89,10 @@ export default function DashboardPage() {
   if (auth.role === "reseller") {
     if (!resellerProfile) return null; // redirecting to /reseller/setup
     return <ResellerDashboard profile={resellerProfile} />;
+  }
+
+  if (auth.role === "workshop") {
+    return <WorkshopDashboard userId={auth.userId!} />;
   }
 
   if (auth.role === "insurance") {

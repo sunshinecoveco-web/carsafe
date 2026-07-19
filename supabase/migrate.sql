@@ -61,6 +61,26 @@ CREATE TABLE IF NOT EXISTS public.vehicle_policies (
   created_at        TIMESTAMPTZ DEFAULT now()
 );
 
+ALTER TABLE public.vehicle_policies ENABLE ROW LEVEL SECURITY;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.vehicle_policies TO anon, authenticated;
+
+DROP POLICY IF EXISTS "public_read_vehicle_policies" ON public.vehicle_policies;
+CREATE POLICY "public_read_vehicle_policies"
+  ON public.vehicle_policies FOR SELECT TO anon, authenticated
+  USING (true);
+
+DROP POLICY IF EXISTS "public_insert_vehicle_policies" ON public.vehicle_policies;
+CREATE POLICY "public_insert_vehicle_policies"
+  ON public.vehicle_policies FOR INSERT TO anon, authenticated
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "public_update_vehicle_policies" ON public.vehicle_policies;
+CREATE POLICY "public_update_vehicle_policies"
+  ON public.vehicle_policies FOR UPDATE TO anon, authenticated
+  USING (true)
+  WITH CHECK (true);
+
 -- ─── vehicle_flags: new table ───────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS public.vehicle_flags (

@@ -34,6 +34,7 @@ import { FuelUsageCard } from "./fuel-usage-card";
 import { InsurerFlagsCard } from "./insurer-flags-card";
 import { InsurerLinkRequestModal } from "./insurer-link-request-modal";
 import { InsurerServiceHistoryCard } from "./insurer-service-history-card";
+import { WorkshopServiceHistoryCard } from "./workshop-service-history-card";
 import { cn } from "@/lib/utils";
 
 export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }) {
@@ -131,10 +132,11 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
   const isAssignedInsurance = auth.role === 'insurance' && vehicle.approvedInsuranceIds?.includes(auth.userId!);
   const isAssignedDealerForClaim = auth.role === 'dealer' && vehicle.status === 'in_claim' && vehicle.approvedDealerIds?.includes(auth.userId!);
   const showInsuranceChat = (isAssignedInsurance || isAssignedDealerForClaim) && vehicle.status === 'in_claim';
-  const showInsurerFlags = (auth.role === 'insurance' && isAssignedInsurance) || (auth.role === 'dealer' && vehicle.approvedDealerIds?.includes(auth.userId!)) || (auth.role === 'reseller' && vehicle.approvedResellerIds?.includes(auth.userId!));
+  const showInsurerFlags = (auth.role === 'insurance' && isAssignedInsurance) || (auth.role === 'dealer' && vehicle.approvedDealerIds?.includes(auth.userId!)) || (auth.role === 'reseller' && vehicle.approvedResellerIds?.includes(auth.userId!)) || auth.role === 'workshop';
   const canAddInsurerFlags = auth.role === 'insurance' && isAssignedInsurance;
   const showLinkToOwner = auth.role === 'insurance' && isAssignedInsurance && vehicle.status === 'insurer_added' && (!vehicle.ownerId || vehicle.ownerId === '');
   const showInsurerServiceHistory = auth.role === 'insurance' && isAssignedInsurance;
+  const showWorkshopServiceHistory = auth.role === 'workshop';
 
   const getStatusBadge = () => {
     if (vehicle.status === 'for_sale') return <Badge variant="secondary">For Sale</Badge>;
@@ -238,6 +240,13 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
                 <div className="space-y-8">
                 {showInsurerServiceHistory ? (
                   <InsurerServiceHistoryCard vehicle={vehicle} />
+                ) : showWorkshopServiceHistory ? (
+                  <WorkshopServiceHistoryCard
+                    serviceHistory={vehicle.serviceHistory}
+                    onUpdateHistory={(newHistory: ServiceRecord[]) => handleUpdate({ serviceHistory: newHistory })}
+                    vehicleId={vehicle.id}
+                    userId={auth.userId}
+                  />
                 ) : (
                   <ServiceHistoryCard 
                     serviceHistory={vehicle.serviceHistory}

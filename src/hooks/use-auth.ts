@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export type UserRole = 'owner' | 'dealer' | 'reseller' | 'insurance';
+export type UserRole = 'owner' | 'dealer' | 'reseller' | 'insurance' | 'workshop';
 
 export interface AuthState {
   isAuthenticated: boolean;

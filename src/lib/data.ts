@@ -43,6 +43,9 @@ type DbServiceLog = {
   category: string | null;
   invoice_url: string | null;
   photos: Array<{ url: string; label: string }> | null;  // JSONB
+  mileage_at_service: number | null;
+  created_by_role: string | null;
+  created_by_user_id: string | null;
 };
 
 type DbFuelRecord = {
@@ -90,6 +93,10 @@ function toServiceRecord(row: DbServiceLog): ServiceRecord {
     category: row.category ? (row.category as ServiceCategory) : undefined,
     invoiceUrl: row.invoice_url ?? undefined,
     photos: row.photos ?? undefined,
+    mileageAtService: row.mileage_at_service ?? undefined,
+    technicianName: row.workshop ?? undefined,
+    createdByRole: row.created_by_role ?? undefined,
+    createdByUserId: row.created_by_user_id ?? undefined,
   };
 }
 

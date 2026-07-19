@@ -28,6 +28,10 @@ export interface ServiceRecord {
   photos?: Photo[];
   status: ServiceStatus;
   category?: ServiceCategory;
+  mileageAtService?: number;
+  technicianName?: string;
+  createdByRole?: string;
+  createdByUserId?: string;
 }
 
 export interface FuelRecord {

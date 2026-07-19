@@ -16,6 +16,7 @@ ALTER TABLE public.fuel_records  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.activity_logs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.vehicle_flags ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.vehicle_link_requests ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vehicle_policies ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.dealers       ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.users         ENABLE ROW LEVEL SECURITY;
 
@@ -27,6 +28,7 @@ GRANT SELECT                    ON public.fuel_records  TO anon, authenticated;
 GRANT SELECT                    ON public.activity_logs TO anon, authenticated;
 GRANT SELECT                    ON public.vehicle_flags TO anon, authenticated;
 GRANT SELECT                    ON public.vehicle_link_requests TO anon, authenticated;
+GRANT SELECT                    ON public.vehicle_policies TO anon, authenticated;
 GRANT SELECT                    ON public.dealers       TO anon, authenticated;
 GRANT SELECT                    ON public.users         TO anon, authenticated;
 
@@ -37,6 +39,7 @@ GRANT INSERT, UPDATE, DELETE    ON public.fuel_records  TO authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.activity_logs TO anon, authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.vehicle_flags TO anon, authenticated;
 GRANT INSERT, UPDATE, DELETE    ON public.vehicle_link_requests TO anon, authenticated;
+GRANT INSERT, UPDATE, DELETE    ON public.vehicle_policies TO anon, authenticated;
 
 -- ─── vehicles ─────────────────────────────────────────────────────────────────
 
@@ -140,6 +143,24 @@ CREATE POLICY "anon_read_vehicle_link_requests"
 DROP POLICY IF EXISTS "anon_insert_vehicle_link_requests" ON public.vehicle_link_requests;
 CREATE POLICY "anon_insert_vehicle_link_requests"
   ON public.vehicle_link_requests FOR INSERT TO anon
+  WITH CHECK (true);
+
+-- ─── vehicle_policies ─────────────────────────────────────────────────────
+
+DROP POLICY IF EXISTS "public_read_vehicle_policies" ON public.vehicle_policies;
+CREATE POLICY "public_read_vehicle_policies"
+  ON public.vehicle_policies FOR SELECT TO anon, authenticated
+  USING (true);
+
+DROP POLICY IF EXISTS "public_insert_vehicle_policies" ON public.vehicle_policies;
+CREATE POLICY "public_insert_vehicle_policies"
+  ON public.vehicle_policies FOR INSERT TO anon, authenticated
+  WITH CHECK (true);
+
+DROP POLICY IF EXISTS "public_update_vehicle_policies" ON public.vehicle_policies;
+CREATE POLICY "public_update_vehicle_policies"
+  ON public.vehicle_policies FOR UPDATE TO anon, authenticated
+  USING (true)
   WITH CHECK (true);
 
 -- ─── dealers ──────────────────────────────────────────────────────────────────
