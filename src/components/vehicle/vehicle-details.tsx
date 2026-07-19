@@ -35,6 +35,7 @@ import { InsurerFlagsCard } from "./insurer-flags-card";
 import { InsurerLinkRequestModal } from "./insurer-link-request-modal";
 import { InsurerServiceHistoryCard } from "./insurer-service-history-card";
 import { WorkshopServiceHistoryCard } from "./workshop-service-history-card";
+import { DealerReadonlySections } from "./dealer-readonly-sections";
 import { cn } from "@/lib/utils";
 
 export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }) {
@@ -137,6 +138,8 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
   const showLinkToOwner = auth.role === 'insurance' && isAssignedInsurance && vehicle.status === 'insurer_added' && (!vehicle.ownerId || vehicle.ownerId === '');
   const showInsurerServiceHistory = auth.role === 'insurance' && isAssignedInsurance;
   const showWorkshopServiceHistory = auth.role === 'workshop';
+  const showDealerReadonlySections = auth.role === 'dealer' && isAssignedDealer;
+  const canViewDealerPolicy = auth.role === 'dealer' && isAssignedDealer && vehicle.consents.allowDealerServiceAccess;
 
   const getStatusBadge = () => {
     if (vehicle.status === 'for_sale') return <Badge variant="secondary">For Sale</Badge>;
@@ -259,6 +262,9 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
                 )}
                 </div>
                 <div className="space-y-8">
+                  {showDealerReadonlySections && (
+                    <DealerReadonlySections vehicle={vehicle} canViewPolicy={canViewDealerPolicy} />
+                  )}
                   {showInsurerFlags && (
                     <InsurerFlagsCard
                       vehicle={vehicle}
