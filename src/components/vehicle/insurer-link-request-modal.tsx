@@ -36,19 +36,26 @@ export function InsurerLinkRequestModal({ vehicle, userId, canRequest = false }:
     setSubmitting(true);
     setError(null);
 
-    const { data: ownerUser, error: ownerLookupError } = await supabase
-      .from("auth.users")
-      .select("id")
-      .eq("email", trimmedEmail)
-      .maybeSingle();
+    let ownerId: string | null = null;
+    try {
+      const response = await fetch(`/api/owners/lookup?email=${encodeURIComponent(trimmedEmail)}`, {
+        method: "GET",
+        cache: "no-store",
+      });
+      const lookupResult = await response.json();
 
-    if (ownerLookupError) {
+      if (!response.ok) {
+        throw new Error(lookupResult.error || "Unable to look up owner account.");
+      }
+
+      ownerId = lookupResult.userId ?? null;
+    } catch (lookupError) {
       setSubmitting(false);
-      setError(ownerLookupError.message);
+      setError(lookupError instanceof Error ? lookupError.message : "Unable to look up owner account.");
       return;
     }
 
-    if (!ownerUser) {
+    if (!ownerId) {
       setSubmitting(false);
       setError("No owner account found with that email");
       return;
@@ -57,7 +64,7 @@ export function InsurerLinkRequestModal({ vehicle, userId, canRequest = false }:
     const { error: insertError } = await supabase.from("vehicle_link_requests").insert({
       vehicle_id: vehicle.id,
       insurer_id: userId,
-      owner_id: ownerUser.id,
+      owner_id: ownerId,
       status: "pending",
     });
 
