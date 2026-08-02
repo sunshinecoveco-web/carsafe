@@ -17,6 +17,7 @@ import type { ResellerProfile } from "@/lib/reseller";
 import { Shield } from "lucide-react";
 import { AddVehicleDialog } from "@/components/vehicle/add-vehicle-dialog";
 import { InsurerAddVehicleDialog } from "@/components/insurance/insurer-add-vehicle-dialog";
+import { FlagVehicleByVinDialog } from "@/components/insurance/flag-vehicle-by-vin-dialog";
 import { OwnerPendingRequests } from "@/components/dashboard/owner-pending-requests";
 
 export default function DashboardPage() {
@@ -117,7 +118,10 @@ export default function DashboardPage() {
             <Shield className="h-4 w-4" />
             <span className="text-sm font-medium">Read-Only Access</span>
           </div>
-          <InsurerAddVehicleDialog userId={auth.userId!} onVehicleAdded={handleVehicleAdded} />
+          <div className="flex flex-wrap items-center gap-2">
+            <InsurerAddVehicleDialog userId={auth.userId!} onVehicleAdded={handleVehicleAdded} />
+            <FlagVehicleByVinDialog userId={auth.userId!} />
+          </div>
         </div>
         <VehicleList vehicles={assigned} />
       </div>
