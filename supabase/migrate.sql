@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS public.fuel_records (
 CREATE TABLE IF NOT EXISTS public.vehicle_policies (
   id                UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   vehicle_id        UUID        NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
-  insurer_id        UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  insurer_id        TEXT        NOT NULL,
   policy_number     TEXT        NOT NULL,
   cover_type        TEXT        NOT NULL,
   inception_date    DATE,
@@ -86,7 +86,7 @@ CREATE POLICY "public_update_vehicle_policies"
 CREATE TABLE IF NOT EXISTS public.vehicle_flags (
   id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   vehicle_id    UUID        NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
-  insurer_id    UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  insurer_id    TEXT        NOT NULL,
   flag_type     TEXT        NOT NULL,
   description   TEXT        NOT NULL,
   visibility    TEXT        NOT NULL DEFAULT 'internal' CHECK (visibility IN ('internal', 'external')),
@@ -98,8 +98,8 @@ CREATE TABLE IF NOT EXISTS public.vehicle_flags (
 CREATE TABLE IF NOT EXISTS public.vehicle_link_requests (
   id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   vehicle_id    UUID        NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
-  insurer_id    UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  owner_id      UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  insurer_id    TEXT        NOT NULL,
+  owner_id      TEXT        NOT NULL,
   status        TEXT        NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
   created_at    TIMESTAMPTZ DEFAULT now()
 );

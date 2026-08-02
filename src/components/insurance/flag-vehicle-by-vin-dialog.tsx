@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/supabase";
+import { buildVehicleFlagInsertPayload } from "@/lib/vehicle-flags";
 import { Flag, Loader2, Search } from "lucide-react";
 
 interface FlagVehicleByVinDialogProps {
@@ -78,15 +79,11 @@ export function FlagVehicleByVinDialog({ userId }: FlagVehicleByVinDialogProps) 
 
       setFoundVehicle(vehicle as VehicleMatch);
 
+      const payload = buildVehicleFlagInsertPayload(vehicle.id, userId, description.trim() || `Flagged by insurer via VIN lookup for ${vehicle.vin}.`);
+
       const { error: flagError } = await supabase
         .from("vehicle_flags")
-        .insert({
-          vehicle_id: vehicle.id,
-          insurer_id: userId,
-          flag_type: "Fraud Indicator",
-          description: description.trim() || `Flagged by insurer via VIN lookup for ${vehicle.vin}.`,
-          visibility: "external",
-        });
+        .insert(payload);
 
       if (flagError) {
         throw flagError;

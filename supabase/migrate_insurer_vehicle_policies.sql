@@ -4,7 +4,7 @@
 CREATE TABLE IF NOT EXISTS public.vehicle_policies (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   vehicle_id UUID NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
-  insurer_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  insurer_id TEXT NOT NULL,
   policy_number TEXT NOT NULL,
   cover_type TEXT NOT NULL,
   inception_date DATE,
