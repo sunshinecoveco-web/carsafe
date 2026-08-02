@@ -177,6 +177,11 @@ export function DealerDashboard({ profile }: DealerDashboardProps) {
                             {vehicle.registrationNumber}
                           </span>
                         )}
+                        {vehicle.vin && (
+                          <span className="text-xs font-mono text-muted-foreground">
+                            · {vehicle.vin}
+                          </span>
+                        )}
                         {vehicle.colour && (
                           <span className="text-xs text-muted-foreground">· {vehicle.colour}</span>
                         )}
