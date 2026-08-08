@@ -174,7 +174,7 @@ BEGIN
     (v2,'2023-08-15','Tyre Rotation',450,'Completed',NULL,'Balanced all four wheels.','VW Master Cars Sandton','Tires'),
     (v2,'2023-02-15','Minor Service',1800,'Completed',NULL,'Oil change and filter.','VW Master Cars Sandton','Routine Maintenance'),
 
-    (v3,'2024-01-22','Oil & Filter Change',1800,'Completed',NULL,'Standard maintenance.','Ford Performance Pretoria','Routine Maintenance'),
+    (v3,'2024-01-22','Oil & Filter Change',1250,'Completed',NULL,'Standard maintenance.','Ford Performance Pretoria','Routine Maintenance'),
     (v3,'2023-06-15','Wiper Blade Replacement',600,'Completed',NULL,'','Ford Performance Pretoria','Routine Maintenance'),
     (v3,'2023-01-15','Full Service',4200,'Completed',NULL,'Replaced spark plugs.','Ford Performance Pretoria','Routine Maintenance'),
 
@@ -203,7 +203,7 @@ BEGIN
     (v9,'2024-01-20','Pre-delivery Inspection',0,'Completed',NULL,'','Cape Town Toyota City','Inspection'),
 
     (v10,'2024-06-15','First Service',1500,'Completed',NULL,'','Ford Performance Pretoria','Routine Maintenance'),
-    (v10,'2024-02-10','Software Patch',0,'Completed',NULL,'','Ford Performance Pretoria','Other'),
+    (v10,'2024-02-10','Software Patch',250,'Completed',NULL,'','Ford Performance Pretoria','Other'),
     (v10,'2023-12-10','Wheel Alignment',450,'Completed',NULL,'','Ford Performance Pretoria','Tires'),
 
     (v11,'2024-07-20','Spark Plug Check',450,'Completed',NULL,'','Ford Performance Pretoria','Routine Maintenance'),
@@ -222,9 +222,9 @@ BEGIN
     (v14,'2024-04-12','45,000km Service',4500,'Completed',NULL,'','Cape Town Toyota City','Routine Maintenance'),
     (v14,'2023-04-10','30,000km Service',3800,'Completed',NULL,'','Cape Town Toyota City','Routine Maintenance'),
 
-    (v15,'2024-09-10','Theft Recovery Inspection',0,'In Progress',NULL,'','VW Master Cars Sandton','Inspection'),
+    (v15,'2024-09-10','Theft Recovery Inspection',350,'In Progress',NULL,'','VW Master Cars Sandton','Inspection'),
     (v15,'2024-06-01','Oil Top-up',250,'Completed',NULL,'','VW Master Cars Sandton','Routine Maintenance'),
-    (v15,'2024-02-15','Performance Brake Service',5500,'Completed',NULL,'','VW Master Cars Sandton','Repairs');
+    (v15,'2024-02-15','Performance Brake Service',4200,'Completed',NULL,'','VW Master Cars Sandton','Repairs');
 
   -- ── Fuel records ──────────────────────────────────────────────────────────
   INSERT INTO public.fuel_records (vehicle_id, fuel_date, amount, cost, odometer) VALUES
