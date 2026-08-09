@@ -18,7 +18,8 @@ ALTER TABLE public.vehicles
   ADD COLUMN IF NOT EXISTS approved_insurance_ids      TEXT[]  DEFAULT '{}',
   ADD COLUMN IF NOT EXISTS allow_dealer_service_access BOOLEAN DEFAULT false,
   ADD COLUMN IF NOT EXISTS allow_reseller_access       BOOLEAN DEFAULT false,
-  ADD COLUMN IF NOT EXISTS allow_insurance_access      BOOLEAN DEFAULT false;
+  ADD COLUMN IF NOT EXISTS allow_insurance_access      BOOLEAN DEFAULT false,
+  ADD COLUMN IF NOT EXISTS is_demo_hero                BOOLEAN DEFAULT false;
 
 -- ─── service_logs: add missing columns ────────────────────────────────────────
 -- Note: "workshop" column already exists and maps to servicedBy in the app.

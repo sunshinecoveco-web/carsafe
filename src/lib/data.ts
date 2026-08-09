@@ -28,6 +28,7 @@ type DbVehicle = {
   allow_dealer_service_access: boolean;
   allow_reseller_access: boolean;
   allow_insurance_access: boolean;
+  is_demo_hero: boolean;
 };
 
 type DbServiceLog = {
@@ -157,6 +158,7 @@ function toVehicle(
     approvedDealerIds: row.approved_dealer_ids ?? [],
     approvedResellerIds: row.approved_reseller_ids ?? [],
     approvedInsuranceIds: row.approved_insurance_ids ?? [],
+    isDemoHero: row.is_demo_hero,
     activityLog: activity
       .map(toActivityLogEntry)
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
@@ -178,6 +180,35 @@ export async function getVehicles(): Promise<Vehicle[]> {
     { data: activityLogs },
   ] = await Promise.all([
     supabase.from('vehicles').select('*'),
+    supabase.from('service_logs').select('*'),
+    supabase.from('fuel_records').select('*'),
+    supabase.from('activity_logs').select('*'),
+  ]);
+
+  if (error) throw error;
+
+  const logs = (serviceLogs ?? []) as DbServiceLog[];
+  const fuel = (fuelRecords ?? []) as DbFuelRecord[];
+  const activity = (activityLogs ?? []) as DbActivityLog[];
+
+  return (vehicles ?? []).map(v =>
+    toVehicle(
+      v as DbVehicle,
+      logs.filter(l => l.vehicle_id === v.id),
+      fuel.filter(f => f.vehicle_id === v.id),
+      activity.filter(a => a.vehicle_id === v.id),
+    )
+  );
+}
+
+export async function getDemoVehicles(): Promise<Vehicle[]> {
+  const [
+    { data: vehicles, error },
+    { data: serviceLogs },
+    { data: fuelRecords },
+    { data: activityLogs },
+  ] = await Promise.all([
+    supabase.from('vehicles').select('*').eq('is_demo_hero', true),
     supabase.from('service_logs').select('*'),
     supabase.from('fuel_records').select('*'),
     supabase.from('activity_logs').select('*'),

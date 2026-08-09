@@ -66,12 +66,13 @@ BEGIN
     id, owner_id, make, model, year, vin, status, image_url, image_hint,
     insurance_provider, insurance_policy_number, insurance_coverage, insurance_expires,
     approved_dealer_ids, approved_reseller_ids, approved_insurance_ids,
-    allow_dealer_service_access, allow_reseller_access, allow_insurance_access
+    allow_dealer_service_access, allow_reseller_access, allow_insurance_access,
+    is_demo_hero
   ) VALUES
     (v1,  owner_id,'Toyota',       'Hilux 2.8GD-6 Legend',      2023,'AHTFR28SA12345678','active',
      'https://picsum.photos/seed/hilux1/600/400',  'white bakkie',
      'Discovery Insure','DISC-001','Comprehensive','2025-06-01',
-     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[]::TEXT[], true,false,false),
+     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[]::TEXT[], true,false,false, true),
 
     (v2,  owner_id,'Volkswagen',   'Polo Vivo 1.4 Trendline',   2022,'WVWZZZ6SA45678901','active',
      'https://picsum.photos/seed/polo1/600/400',   'silver hatchback',
@@ -81,7 +82,7 @@ BEGIN
     (v3,  owner_id,'Ford',         'Ranger 2.0SiT XLT',         2021,'1FTFX1SA789012345','for_sale',
      'https://picsum.photos/seed/ranger1/600/400', 'blue bakkie',
      'Santam','SAN-003','Full Cover','2024-11-15',
-     ARRAY[dealer_id::TEXT],ARRAY[reseller_id::TEXT],ARRAY[]::TEXT[], true,true,false),
+     ARRAY[dealer_id::TEXT],ARRAY[reseller_id::TEXT],ARRAY[]::TEXT[], true,true,false, true),
 
     (v4,  owner_id,'BMW',          '320i M Sport',              2021,'WBA5F3SA012345678','in_claim',
      'https://picsum.photos/seed/bmw1/600/400',    'black sedan',
@@ -116,12 +117,12 @@ BEGIN
     (v10, owner_id,'Haval',        'Jolion 1.5T Super Luxury',  2023,'LGW123SA890123456','active',
      'https://picsum.photos/seed/haval1/600/400',  'blue crossover',
      'Outsurance','OUT-010','Comprehensive','2025-06-15',
-     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[]::TEXT[], true,false,false),
+     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[]::TEXT[], true,false,false, true),
 
     (v11, owner_id,'Chery',        'Tiggo 4 Pro Elite',         2023,'CHY456SA111222333','active',
      'https://picsum.photos/seed/chery1/600/400',  'white crossover',
      'Santam','SAN-011','Comprehensive','2025-09-01',
-     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[]::TEXT[], true,false,false),
+     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[]::TEXT[], true,false,false, true),
 
     (v12, owner_id,'Nissan',       'Navara 2.5DDTi PRO-4X',     2022,'NIS112SA222333444','active',
      'https://picsum.photos/seed/navara1/600/400', 'grey bakkie',
@@ -141,7 +142,7 @@ BEGIN
     (v15, owner_id,'Volkswagen',   'Golf 8 GTI',                2022,'WVW887SA555666777','in_claim',
      'https://picsum.photos/seed/golf81/600/400',  'red hot hatch',
      'Santam','SAN-015','Comprehensive','2025-02-15',
-     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[insurer_id::TEXT], true,false,true)
+     ARRAY[dealer_id::TEXT],ARRAY[]::TEXT[],ARRAY[insurer_id::TEXT], true,false,true, true)
 
   ON CONFLICT (id) DO UPDATE SET
     owner_id                    = EXCLUDED.owner_id,
@@ -155,7 +156,8 @@ BEGIN
     approved_insurance_ids      = EXCLUDED.approved_insurance_ids,
     allow_dealer_service_access = EXCLUDED.allow_dealer_service_access,
     allow_reseller_access       = EXCLUDED.allow_reseller_access,
-    allow_insurance_access      = EXCLUDED.allow_insurance_access;
+    allow_insurance_access      = EXCLUDED.allow_insurance_access,
+    is_demo_hero                = EXCLUDED.is_demo_hero;
 
   -- ── Clear child tables before re-inserting ────────────────────────────────
   DELETE FROM public.service_logs  WHERE vehicle_id = ANY(all_vehicles);

@@ -91,6 +91,7 @@ export interface Vehicle {
   approvedDealerIds?: string[];
   approvedResellerIds?: string[];
   approvedInsuranceIds?: string[];
+  isDemoHero?: boolean;
   activityLog: ActivityLogEntry[];
   consents: VehicleConsents;
 }
