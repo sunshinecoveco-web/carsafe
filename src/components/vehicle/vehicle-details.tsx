@@ -5,7 +5,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { Vehicle, ServiceRecord, ActivityLogEntry, VehicleConsents } from "@/lib/types";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+import { Badge, badgeVariants } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { supabase } from "@/supabase";
 import { ServiceHistoryCard } from "./service-history-card";
 import { AiRecommendationTool } from "./ai-recommendation-tool";
 import { useAuth } from "@/hooks/use-auth";
@@ -38,6 +40,16 @@ import { WorkshopServiceHistoryCard } from "./workshop-service-history-card";
 import { DealerReadonlySections } from "./dealer-readonly-sections";
 import { cn } from "@/lib/utils";
 
+interface VehicleFlag {
+  id: string;
+  vehicle_id: string;
+  insurer_id: string;
+  flag_type: string;
+  description: string;
+  visibility: "internal" | "external";
+  created_at: string;
+}
+
 export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }) {
   const [vehicle, setVehicle] = useState(initialVehicle);
   const auth = useAuth();
@@ -45,6 +57,9 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
   const { toast } = useToast();
   const [isDealerVerified, setIsDealerVerified] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isClaimOpen, setIsClaimOpen] = useState(false);
+  const [claimFlags, setClaimFlags] = useState<VehicleFlag[]>([]);
+  const [claimFlagsLoading, setClaimFlagsLoading] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
@@ -73,6 +88,28 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
         checkDealerVerification();
     }
   }, [auth.isAuthenticated, auth.role, auth.userId, initialVehicle.id, router, toast]);
+
+  const fetchClaimFlags = async () => {
+    if (!vehicle.id) return;
+    setClaimFlagsLoading(true);
+
+    const { data, error } = await supabase
+      .from('vehicle_flags')
+      .select('*')
+      .eq('vehicle_id', vehicle.id)
+      .order('created_at', { ascending: false });
+
+    if (!error && data) {
+      setClaimFlags(data as VehicleFlag[]);
+    }
+    setClaimFlagsLoading(false);
+  };
+
+  useEffect(() => {
+    if (isClaimOpen && vehicle.status === 'in_claim') {
+      fetchClaimFlags();
+    }
+  }, [isClaimOpen, vehicle.id, vehicle.status]);
 
   const handleUpdate = (updatedData: Partial<Vehicle>) => {
     setVehicle(prevVehicle => {
@@ -127,23 +164,139 @@ export function VehicleDetails({ vehicle: initialVehicle }: { vehicle: Vehicle }
   const isReadOnly = auth.role === 'insurance' && !vehicle.approvedInsuranceIds?.includes(auth.userId!);
   const showPublicLink = vehicle.status === 'for_sale' && (auth.role === 'owner' || auth.role === 'reseller');
   const isOwner = auth.role === 'owner';
-  const isAssignedDealer = auth.role === 'dealer' && vehicle.approvedDealerIds?.includes(auth.userId!);
+  const isAssignedDealer = auth.role === 'dealer' && !!vehicle.approvedDealerIds?.includes(auth.userId!);
   const showDealerChat = isOwner || isAssignedDealer;
 
-  const isAssignedInsurance = auth.role === 'insurance' && vehicle.approvedInsuranceIds?.includes(auth.userId!);
-  const isAssignedDealerForClaim = auth.role === 'dealer' && vehicle.status === 'in_claim' && vehicle.approvedDealerIds?.includes(auth.userId!);
+  const isAssignedInsurance = auth.role === 'insurance' && !!vehicle.approvedInsuranceIds?.includes(auth.userId!);
+  const isAssignedDealerForClaim = auth.role === 'dealer' && vehicle.status === 'in_claim' && !!vehicle.approvedDealerIds?.includes(auth.userId!);
   const showInsuranceChat = (isAssignedInsurance || isAssignedDealerForClaim) && vehicle.status === 'in_claim';
-  const showInsurerFlags = (auth.role === 'insurance' && isAssignedInsurance) || (auth.role === 'dealer' && vehicle.approvedDealerIds?.includes(auth.userId!)) || (auth.role === 'reseller' && vehicle.approvedResellerIds?.includes(auth.userId!)) || auth.role === 'workshop';
+  const showInsurerFlags = (auth.role === 'insurance' && isAssignedInsurance) || (auth.role === 'dealer' && !!vehicle.approvedDealerIds?.includes(auth.userId!)) || (auth.role === 'reseller' && !!vehicle.approvedResellerIds?.includes(auth.userId!)) || auth.role === 'workshop';
   const canAddInsurerFlags = auth.role === 'insurance' && isAssignedInsurance;
   const showLinkToOwner = auth.role === 'insurance' && isAssignedInsurance && vehicle.status === 'insurer_added' && (!vehicle.ownerId || vehicle.ownerId === '');
   const showInsurerServiceHistory = auth.role === 'insurance' && isAssignedInsurance;
   const showWorkshopServiceHistory = auth.role === 'workshop';
   const showDealerReadonlySections = auth.role === 'dealer' && isAssignedDealer;
-  const canViewDealerPolicy = auth.role === 'dealer' && isAssignedDealer && vehicle.consents.allowDealerServiceAccess;
+  const canViewDealerPolicy = auth.role === 'dealer' && isAssignedDealer && !!vehicle.consents.allowDealerServiceAccess;
+
+  const claimServiceEntries = vehicle.serviceHistory.filter((entry) => /claim/i.test(entry.service) || /claim/i.test(entry.notes || ""));
+  const claimActivityEntries = vehicle.activityLog.filter((entry) => /claim/i.test(entry.action) || /claim/i.test(entry.details || ""));
+  const claimFlagsWithMatch = claimFlags.filter((flag) => /claim/i.test(flag.flag_type) || /claim/i.test(flag.description));
 
   const getStatusBadge = () => {
     if (vehicle.status === 'for_sale') return <Badge variant="secondary">For Sale</Badge>;
-    if (vehicle.status === 'in_claim') return <Badge variant="destructive">Active Insurance Claim</Badge>;
+    if (vehicle.status === 'in_claim') {
+      return (
+        <Dialog open={isClaimOpen} onOpenChange={setIsClaimOpen}>
+          <DialogTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                badgeVariants({ variant: 'destructive' }),
+                'cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2'
+              )}
+            >
+              Active Insurance Claim
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Claim Details</DialogTitle>
+              <DialogDescription>
+                Information related to this active insurance claim.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6 pt-4">
+              <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+                <p className="text-sm font-semibold text-red-700">Claim status</p>
+                <p className="mt-1 text-sm text-foreground">Active Insurance Claim</p>
+              </div>
+
+              <div className="rounded-lg border border-border bg-background p-4">
+                <p className="text-sm font-semibold text-foreground">Insurance details</p>
+                <div className="mt-3 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2">
+                  <div>
+                    <p className="font-medium text-foreground">Provider</p>
+                    <p>{vehicle.insurance.provider || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Policy</p>
+                    <p>{vehicle.insurance.policyNumber || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Coverage</p>
+                    <p>{vehicle.insurance.coverage || 'N/A'}</p>
+                  </div>
+                  <div>
+                    <p className="font-medium text-foreground">Expires</p>
+                    <p>{vehicle.insurance.expires || 'N/A'}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-border bg-background p-4">
+                <p className="text-sm font-semibold text-foreground">Claim-related service items</p>
+                {claimServiceEntries.length > 0 ? (
+                  <div className="mt-3 space-y-3">
+                    {claimServiceEntries.map((service) => (
+                      <div key={service.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                        <p className="font-medium text-foreground">{service.service}</p>
+                        <p className="text-sm text-muted-foreground">{service.date}</p>
+                        <p className="mt-1 text-sm">Cost: {service.cost}</p>
+                        {service.notes && <p className="mt-1 text-sm text-muted-foreground">{service.notes}</p>}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-sm text-muted-foreground">No claim-specific service entries found.</p>
+                )}
+              </div>
+
+              <div className="rounded-lg border border-border bg-background p-4">
+                <p className="text-sm font-semibold text-foreground">Claim-related activity log</p>
+                {claimActivityEntries.length > 0 ? (
+                  <div className="mt-3 space-y-3">
+                    {claimActivityEntries.map((activity) => (
+                      <div key={activity.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                        <p className="font-medium text-foreground">{activity.action}</p>
+                        <p className="text-sm text-muted-foreground">{activity.timestamp}</p>
+                        {activity.details && <p className="mt-1 text-sm text-muted-foreground">{activity.details}</p>}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-sm text-muted-foreground">No claim-related activity log entries found.</p>
+                )}
+              </div>
+
+              <div className="rounded-lg border border-border bg-background p-4">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-sm font-semibold text-foreground">Claim flags</p>
+                  {claimFlagsLoading && <p className="text-xs text-muted-foreground">Loading flags…</p>}
+                </div>
+                {claimFlagsWithMatch.length > 0 ? (
+                  <div className="mt-3 space-y-3">
+                    {claimFlagsWithMatch.map((flag) => (
+                      <div key={flag.id} className="rounded-lg border border-amber-200 bg-amber-50 p-3">
+                        <p className="font-medium text-amber-900">{flag.flag_type}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">{new Date(flag.created_at).toLocaleDateString()}</p>
+                        <p className="mt-2 text-sm text-foreground">{flag.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-3 text-sm text-muted-foreground">No claim-related flags recorded yet.</p>
+                )}
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button onClick={() => setIsClaimOpen(false)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      );
+    }
     return null;
   }
   
