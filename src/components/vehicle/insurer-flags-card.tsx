@@ -151,79 +151,79 @@ export function InsurerFlagsCard({ vehicle, userRole, userId, canAddFlag = false
             <Flag className="h-4 w-4 text-amber-600" />
             <CardTitle className="text-base">Vehicle Flags</CardTitle>
           </div>
-          {canAddFlag && (
-            <Dialog open={open} onOpenChange={(value) => {
-              setOpen(value);
-              if (!value) resetForm();
-            }}>
+          <Dialog open={open} onOpenChange={(value) => {
+            setOpen(value);
+            if (!value) resetForm();
+          }}>
+            {canAddFlag && (
               <DialogTrigger asChild>
                 <Button size="sm" variant="outline">
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Add Flag
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-lg">
-                <DialogHeader>
-                  <DialogTitle>{editingFlag ? "Edit Flag" : "Add Flag"}</DialogTitle>
-                  <DialogDescription>
-                    Record a fraud indicator, claim alert, anomaly, or general note for this vehicle.
-                  </DialogDescription>
-                </DialogHeader>
-                <form onSubmit={handleSubmit} className="space-y-4 py-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="flagType">Flag Type</Label>
-                    <select
-                      id="flagType"
-                      value={formState.flagType}
-                      onChange={(event) => setFormState((prev) => ({ ...prev, flagType: event.target.value }))}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    >
-                      <option value="Fraud Indicator">Fraud Indicator</option>
-                      <option value="Claim Alert">Claim Alert</option>
-                      <option value="Anomaly">Anomaly</option>
-                      <option value="General">General</option>
-                    </select>
-                  </div>
+            )}
+            <DialogContent className="sm:max-w-lg">
+              <DialogHeader>
+                <DialogTitle>{editingFlag ? "Edit Flag" : "Add Flag"}</DialogTitle>
+                <DialogDescription>
+                  Record a fraud indicator, claim alert, anomaly, or general note for this vehicle.
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit} className="space-y-4 py-2">
+                <div className="space-y-2">
+                  <Label htmlFor="flagType">Flag Type</Label>
+                  <select
+                    id="flagType"
+                    value={formState.flagType}
+                    onChange={(event) => setFormState((prev) => ({ ...prev, flagType: event.target.value }))}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="Fraud Indicator">Fraud Indicator</option>
+                    <option value="Claim Alert">Claim Alert</option>
+                    <option value="Anomaly">Anomaly</option>
+                    <option value="General">General</option>
+                  </select>
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="description">Description</Label>
-                    <Textarea
-                      id="description"
-                      value={formState.description}
-                      onChange={(event) => setFormState((prev) => ({ ...prev, description: event.target.value }))}
-                      placeholder="Add details for the insurer team or downstream partners."
-                      required
-                    />
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    value={formState.description}
+                    onChange={(event) => setFormState((prev) => ({ ...prev, description: event.target.value }))}
+                    placeholder="Add details for the insurer team or downstream partners."
+                    required
+                  />
+                </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="visibility">Visibility</Label>
-                    <select
-                      id="visibility"
-                      value={formState.visibility}
-                      onChange={(event) => setFormState((prev) => ({ ...prev, visibility: event.target.value as "internal" | "external" }))}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    >
-                      <option value="internal">Internal Only</option>
-                      <option value="external">Visible to Dealers & Workshops</option>
-                    </select>
-                  </div>
+                <div className="space-y-2">
+                  <Label htmlFor="visibility">Visibility</Label>
+                  <select
+                    id="visibility"
+                    value={formState.visibility}
+                    onChange={(event) => setFormState((prev) => ({ ...prev, visibility: event.target.value as "internal" | "external" }))}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  >
+                    <option value="internal">Internal Only</option>
+                    <option value="external">Visible to Dealers & Workshops</option>
+                  </select>
+                </div>
 
-                  <DialogFooter>
-                    <Button type="button" variant="outline" onClick={() => {
-                      setOpen(false);
-                      resetForm();
-                    }}>
-                      Cancel
-                    </Button>
-                    <Button type="submit" disabled={submitting || !formState.description.trim()}>
-                      {submitting ? "Saving…" : editingFlag ? "Save Changes" : "Save Flag"}
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-          )}
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => {
+                    setOpen(false);
+                    resetForm();
+                  }}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={submitting || !formState.description.trim()}>
+                    {submitting ? "Saving…" : editingFlag ? "Save Changes" : "Save Flag"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
       </CardHeader>
       <CardContent className="pt-0">
